@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "seed": "node seeders/seeder.js"
+    "seed": "node seeders/seeder.js",
+    "db:tunnel": "railway connect MySQL --tunnel-only --port 3307"
   },
   "dependencies": {
     "axios": "^1.6.8",
