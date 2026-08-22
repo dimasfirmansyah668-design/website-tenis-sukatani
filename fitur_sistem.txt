@@ -1,0 +1,16 @@
+Pada bagian pelanggan, aplikasi ini berisi beberapa halaman, yaitu:
+
+1. Halaman Dashboard. Berisi informasi tentang Alur Booking Lapangan Tenis Sukatani.
+2. Halaman Lapangan. Berisi daftar lapangan yang tersedia, termasuk harga dan deskripsi.
+3. Halaman Booking. Berisi form untuk melakukan booking lapangan tenis termasuk melihat jadwal yang tersedia, tanggal, dan waktu.
+4. Halaman Riwayat Booking. Berisi daftar dan status booking yang telah dilakukan sebelumnya oleh pelanggan.
+5. Halaman Informasi. Berisi tentang informasi kontak, alamat, email, yang dapat dihubungi. Termasuk fasilitas, dan jam operasional.
+
+Pada bagian admin, aplikasi ini berisi beberapa halaman (fitur), yaitu:
+
+1. Halaman Dashboard. Berisi ringkasan data statistik sistem, seperti total pesanan, total pendapatan, jumlah pelanggan, dan pesanan hari ini.
+2. Halaman Pemesanan. Berisi daftar seluruh transaksi booking dari semua pelanggan, lengkap dengan fitur untuk menyetujui pesanan dan memvalidasi pembayaran pelanggan.
+3. Halaman Kelola Lapangan. Berisi daftar lapangan, beserta form untuk menambah lapangan baru, mengubah detail (harga, fasilitas, deskripsi), dan menghapus lapangan.
+4. Halaman Kelola Jadwal. Berisi fitur untuk memblokir jam atau tanggal tertentu (misalnya saat maintenance atau turnamen) agar lapangan tidak bisa dipesan oleh pelanggan.
+5. Halaman Kelola User. Berisi daftar seluruh akun pelanggan yang terdaftar di sistem, dilengkapi fitur untuk menonaktifkan (blokir) atau menghapus akun pelanggan yang bermasalah.
+6. Halaman Laporan. Berisi rekapitulasi laporan pendapatan dan transaksi per bulan yang merinci data pemesanan yang sudah sukses (lunas).

@@ -1,0 +1,269 @@
+==================================================================================
+           PERANCANGAN ANTARMUKA / WIREFRAME WEBSITE LAPANGAN TENIS SUKATANI
+==================================================================================
+Nama Proyek     : Sistem Penyewaan / Booking Lapangan Tenis Sukatani
+Jenis Dokumen   : Perancangan Antarmuka / Layar Sistem (UI Wireframe Layout)
+File Dokumen    : rancangan_wireframe.txt
+==================================================================================
+
+----------------------------------------------------------------------------------
+1. PENJELASAN UMUM PERANCANGAN ANTARMUKA (UI WIREFRAME)
+----------------------------------------------------------------------------------
+Perancangan antarmuka (wireframe) menggambarkan tata letak visual elemen-elemen 
+halaman website Sistem Penyewaan Lapangan Tenis Sukatani. Wireframe dibagi menjadi 
+2 (dua) modul utama:
+1. **Modul Pelanggan (User Interface)** : Halaman Informasi, Katalog Lapangan, 
+   Form Pemesanan Booking, dan Riwayat Transaksi.
+2. **Modul Admin (Admin Panel Interface)**: Dashboard Statistik, Kelola Pemesanan, 
+   Kelola Lapangan, Kelola Jadwal (Blokir), Kelola User, dan Laporan Transaksi.
+
+
+----------------------------------------------------------------------------------
+2. WIREFRAME MODUL PELANGGAN (USER INTERFACE)
+----------------------------------------------------------------------------------
+
+A. WIREFRAME HALAMAN UTAMA / INFORMASI (`/` & `/informasi`)
+==================================================================================
++--------------------------------------------------------------------------------+
+| [LOGO] TenisBook      [Dashboard] [Lapangan] [Booking] [Riwayat] [Info] [MASUK]|
++--------------------------------------------------------------------------------+
+|                                                                                |
+|                        SEWA LAPANGAN TENIS SUKATANI                            |
+|             Pesan Lapangan Tenis Favorit Anda Secara Online & Cepat            |
+|                                                                                |
+|                           [ PESAN LAPANGAN SEKARANG ]                          |
+|                                                                                |
++--------------------------------------------------------------------------------+
+| PANDUAN ALUR BOOKING:                                                          |
+| +-----------------+  +-----------------+  +-----------------+  +-----------------+ |
+| | 1. Pilih        |  | 2. Tentukan     |  | 3. Transfer     |  | 4. Main &       | |
+| |    Lapangan     |->|    Tanggal & Jam|->|    Pembayaran   |->|    Tunjukkan    | |
+| |    Tenis        |  |    Sewa         |  |    & Resi       |  |    Tiket        | |
+| +-----------------+  +-----------------+  +-----------------+  +-----------------+ |
++--------------------------------------------------------------------------------+
+| INFORMASI ARENA & JAM OPERASIONAL:                                             |
+| - Alamat: Jl. Sukatani Tenis Arena No. 12, Bekasi                             |
+| - Jam Operasional: Setiap Hari (07:00 - 22:00 WIB)                            |
+| - Kontak WhatsApp: 0812-3456-7890 | Email: info@sukatanitenis.com              |
++--------------------------------------------------------------------------------+
+| (C) 2026 Sukatani Tenis Arena. All Rights Reserved.                            |
++--------------------------------------------------------------------------------+
+
+Deskripsi Halaman Utama:
+Halaman ini menampilkan navbar atas untuk navigasi menu, banner hero dengan tombol 
+panggilan aksi (CTA) booking, 4 langkah panduan pemesanan, serta rincian jam buka, 
+kontak, dan lokasi arena.
+
+
+B. WIREFRAME HALAMAN KATALOG LAPANGAN (`/lapangan`)
+==================================================================================
++--------------------------------------------------------------------------------+
+| [LOGO] TenisBook      [Dashboard] [Lapangan*] [Booking] [Riwayat] [Info] [USER]|
++--------------------------------------------------------------------------------+
+| KATALOG LAPANGAN TENIS                                                         |
+| [ Cari Lapangan...          ]  Filter: [ Semua Status v ]                      |
+|                                                                                |
+| +------------------------------+  +------------------------------+             |
+| | [ FOTO LAPANGAN TENIS A ]    |  | [ FOTO LAPANGAN TENIS B ]    |             |
+| | Lapangan Tenis A (Outdoor)   |  | Lapangan Tenis B (Indoor)    |             |
+| | Tarif: Rp 80.000 / Jam       |  | Tarif: Rp 120.000 / Jam      |             |
+| | Status: [ AKTIF ]            |  | Status: [ AKTIF ]            |             |
+| | Fasilitas: Lampu LED, Kantin |  | Fasilitas: Karpet, LED, AC   |             |
+| |                              |  |                              |             |
+| | [ Detail ] [ PESAN SEKARANG ]|  | [ Detail ] [ PESAN SEKARANG ]|             |
+| +------------------------------+  +------------------------------+             |
++--------------------------------------------------------------------------------+
+
+Deskripsi Halaman Katalog Lapangan:
+Halaman ini menampilkan daftar seluruh lapangan tenis yang tersedia dalam bentuk 
+kartu (card grid). Setiap kartu dilengkapi foto, tarif per jam, fasilitas, tombol 
+detail, dan tombol booking langsung.
+
+
+C. WIREFRAME HALAMAN FORM BOOKING LAPANGAN (`/booking`)
+==================================================================================
++--------------------------------------------------------------------------------+
+| [LOGO] TenisBook      [Dashboard] [Lapangan] [Booking*] [Riwayat] [Info][USER]|
++--------------------------------------------------------------------------------+
+| FORM PEMESANAN LAPANGAN TENIS                                                  |
+|                                                                                |
+| Pilih Lapangan   : [ Lapangan Tenis A (Outdoor) - Rp 80.000/Jam            v ]|
+| Tanggal Sewa     : [ 2026-08-20                              ] [ Calender ]|
+| Jam Mulai        : [ 08:00 WIB v ]                                             |
+| Jam Selesai      : [ 10:00 WIB v ]                                             |
+| Catatan Khusus   : [ Bawa raket tambahan                                   ]|
+|                                                                                |
+| ------------------------------------------------------------------------------ |
+| RINGKASAN BIAYA:                                                               |
+| Total Durasi     : 2 Jam                                                       |
+| Total Harga      : Rp 160.000                                                  |
+|                                                                                |
+|                             [ BUAT PESANAN SEKARANG ]                          |
++--------------------------------------------------------------------------------+
+
+Deskripsi Halaman Form Booking:
+Halaman ini berisi formulir interaktif bagi pelanggan untuk menentukan tanggal 
+dan jam main. Sistem akan melakukan validasi ketersediaan jadwal secara langsung 
+serta mengkalkulasi total biaya sewa.
+
+
+D. WIREFRAME HALAMAN RIWAYAT BOOKING (`/riwayat`)
+==================================================================================
++--------------------------------------------------------------------------------+
+| [LOGO] TenisBook      [Dashboard] [Lapangan] [Booking] [Riwayat*] [Info][USER]|
++--------------------------------------------------------------------------------+
+| RIWAYAT PEMESANAN SAYA                                                         |
+|                                                                                |
+| +----------------------------------------------------------------------------+ |
+| | ID Tiket: #BK-102 | Lapangan A | Tgl: 20-08-2026 (08:00 - 10:00) | Rp 160.000| |
+| | Status Booking : [ PENDING ]      Status Bayar: [ BELUM BAYAR ]            | |
+| | Aksi: [ UPLOAD BUKTI BAYAR ]  [ KONFIRMASI WHATSAPP ]                      | |
+| +----------------------------------------------------------------------------+ |
+| | ID Tiket: #BK-089 | Lapangan B | Tgl: 15-08-2026 (14:00 - 16:00) | Rp 240.000| |
+| | Status Booking : [ DIKONFIRMASI ] Status Bayar: [ SUDAH BAYAR ]           | |
+| | Aksi: [ LIHAT TIKET INVOICE ]                                              | |
+| +----------------------------------------------------------------------------+ |
++--------------------------------------------------------------------------------+
+
+Deskripsi Halaman Riwayat Booking:
+Halaman ini menampilkan daftar seluruh transaksi pemesanan milik pelanggan lengkap 
+dengan indikator status transaksi, tombol pengunggahan foto bukti transfer, serta 
+tombol WhatsApp untuk konfirmasi otomatis.
+
+
+----------------------------------------------------------------------------------
+3. WIREFRAME MODUL ADMIN (ADMIN PANEL INTERFACE)
+----------------------------------------------------------------------------------
+
+A. WIREFRAME HALAMAN LOGIN ADMIN (`/login`)
+==================================================================================
++--------------------------------------------------------------------------------+
+|                                                                                |
+|                        +------------------------------+                        |
+|                        |        PANEL LOGIN ADMIN     |                        |
+|                        |   Sistem Booking Sukatani    |                        |
+|                        +------------------------------+                        |
+|                        | Email Admin   : [          ] |                        |
+|                        | Password      : [          ] |                        |
+|                        |                              |                        |
+|                        |        [ MASUK ADMIN ]       |                        |
+|                        +------------------------------+                        |
+|                                                                                |
++--------------------------------------------------------------------------------+
+
+Deskripsi Halaman Login Admin:
+Form masuk khusus administrator untuk mengakses dashboard pengelola sistem.
+
+
+B. WIREFRAME HALAMAN DASHBOARD ADMIN (`/admin`)
+==================================================================================
++--------------------------------------------------------------------------------+
+| [SIDEBAR MENU]   | DASHBOARD UTAMA ADMIN                                       |
+| - Dashboard*     |                                                             |
+| - Pemesanan      | +--------------+ +--------------+ +-----------+ +---------+ |
+| - Lapangan       | |Total Pesanan | |Total Biaya   | |Total User | |Hari Ini | |
+| - Jadwal Blokir  | |   128 Tiket  | |Rp 15.400.000 | |  45 User  | | 6 Pesan | |
+| - Kelola User    | +--------------+ +--------------+ +-----------+ +---------+ |
+| - Laporan        |                                                             |
+| - [Logout]       | RIWAYAT TRANSAKSI TERBARU:                                  |
+|                  | [ Tabel Ringkasan Pemesanan Masuk Hari Ini ]               |
++--------------------------------------------------------------------------------+
+
+Deskripsi Halaman Dashboard Admin:
+Menampilkan sidebar navigasi utama serta 4 buah kartu statistik rekap data pesanan, 
+total pendapatan, jumlah pelanggan terdaftar, dan pesanan hari ini.
+
+
+C. WIREFRAME HALAMAN KELOLA PEMESANAN (`/admin/pemesanan`)
+==================================================================================
++--------------------------------------------------------------------------------+
+| [SIDEBAR MENU]   | KELOLA DATA PEMESANAN BOOKING                               |
+| - Dashboard      | Filter Status: [ Semua ] [ Pending ] [ Dikonfirmasi ]       |
+| - Pemesanan*     |                                                             |
+| - Lapangan       | +----+----------+-----------+------------+--------+-------+ |
+| - Jadwal Blokir  | |ID  | Pelanggan| Lapangan  | Tanggal/Jam| Status | Aksi  | |
+| - Kelola User    | +----+----------+-----------+------------+--------+-------+ |
+| - Laporan        | |#102| Dimas    | Lapangan A| 20-08-2026 |Pending |[Resi] | |
+| - [Logout]       | |    |          |           | 08:00-10:00|        |[Setuju]|
+|                  | |    |          |           |            |        |[Batal]| |
+|                  | +----+----------+-----------+------------+--------+-------+ |
++--------------------------------------------------------------------------------+
+
+Deskripsi Halaman Kelola Pemesanan:
+Halaman untuk memantau seluruh transaksi pelanggan, memeriksa foto bukti pembayaran 
+resmi (resi transfer), serta menyetujui atau membatalkan pesanan.
+
+
+D. WIREFRAME HALAMAN KELOLA LAPANGAN (`/admin/lapangan`)
+==================================================================================
++--------------------------------------------------------------------------------+
+| [SIDEBAR MENU]   | KELOLA MASTER DATA LAPANGAN      [ + TAMBAH LAPANGAN BARU ] |
+| - Dashboard      |                                                             |
+| - Pemesanan      | +----+------------------+----------------+--------+-------+ |
+| - Lapangan*      | |ID  | Nama Lapangan    | Tarif per Jam  | Status | Aksi  | |
+| - Jadwal Blokir  | +----+------------------+----------------+--------+-------+ |
+| - Kelola User    | |1   | Lapangan Tenis A | Rp 80.000      | Aktif  |[Edit] | |
+| - Laporan        | |    | (Outdoor)        |                |        |[Hapus]| |
+| - [Logout]       | |2   | Lapangan Tenis B | Rp 120.000     | Aktif  |[Edit] | |
+|                  | +----+------------------+----------------+--------+-------+ |
++--------------------------------------------------------------------------------+
+
+Deskripsi Halaman Kelola Lapangan:
+Halaman master data untuk menambahkan unit lapangan tenis baru, memperbarui harga 
+sewa, mengatur status aktif/nonaktif, dan menghapus lapangan.
+
+
+E. WIREFRAME HALAMAN KELOLA JADWAL / SLOT BLOKIR (`/admin/jadwal`)
+==================================================================================
++--------------------------------------------------------------------------------+
+| [SIDEBAR MENU]   | KELOLA SLOT JADWAL BLOKIR        [ + TAMBAH SLOT BLOKIR ]   |
+| - Dashboard      |                                                             |
+| - Pemesanan      | +----+----------+------------+------------+----------+------+ |
+| - Lapangan       | |ID  | Lapangan | Tanggal    | Jam Blokir | Alasan   | Aksi | |
+| - Jadwal Blokir* | +----+----------+------------+------------+----------+------+ |
+| - Kelola User    | |1   |Lapangan A| 22-08-2026 | 08:00-12:00|Perbaikan |[Hapus]|
+| - Laporan        | +----+----------+------------+------------+----------+------+ |
++--------------------------------------------------------------------------------+
+
+Deskripsi Halaman Kelola Jadwal (Slot Blokir):
+Digunakan admin untuk menutup slot waktu operasional secara sementara (misal: 
+karena perbaikan lapangan atau turnamen) agar tidak bisa dipesan pelanggan.
+
+
+F. WIREFRAME HALAMAN KELOLA USER (`/admin/users`)
+==================================================================================
++--------------------------------------------------------------------------------+
+| [SIDEBAR MENU]   | KELOLA DATA PELANGGAN TERDAFTAR                             |
+| - Dashboard      | [ Cari Pelanggan...                          ]              |
+| - Pemesanan      |                                                             |
+| - Lapangan       | +----+------------------+------------------+--------+-------+ |
+| - Jadwal Blokir  | |ID  | Nama Pelanggan   | Email / No HP    | Status | Aksi  | |
+| - Kelola User*   | +----+------------------+------------------+--------+-------+ |
+| - Laporan        | |1   | Dimas            | dimas@gmail.com  | Aktif  |[Blokir|
+| - [Logout]       | |    |                  | 08123456789      |        |[Hapus]|
+|                  | +----+------------------+------------------+--------+-------+ |
++--------------------------------------------------------------------------------+
+
+Deskripsi Halaman Kelola User:
+Menampilkan daftar seluruh akun pelanggan terdaftar serta fitur untuk menonaktifkan 
+(memblokir) atau menghapus akun bermasalah.
+
+
+G. WIREFRAME HALAMAN LAPORAN TRANSAKSI (`/admin/laporan`)
+==================================================================================
++--------------------------------------------------------------------------------+
+| [SIDEBAR MENU]   | LAPORAN REKAPITULASI PENDAPATAN                             |
+| - Dashboard      | Pilih Bulan: [ Agustus v ]  Tahun: [ 2026 v ] [ TAMPILKAN ] |
+| - Pemesanan      |                                                             |
+| - Lapangan       | REKAPITULASI BULAN AGUSTUS 2026:                            |
+| - Jadwal Blokir  | Total Transaksi Sukses : 45 Transaksi                        |
+| - Kelola User    | Total Pendapatan Bersih: Rp 6.800.000                       |
+| - Laporan*       |                                                             |
+| - [Logout]       |                         [ CETAK / EXPORT PDF ]              |
++--------------------------------------------------------------------------------+
+
+Deskripsi Halaman Laporan:
+Halaman untuk menyaring rekapitulasi data pendapatan bulanan dan mencetak laporan 
+keuangan penyewaan dalam bentuk cetak/PDF.
+
+==================================================================================

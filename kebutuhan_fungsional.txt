@@ -1,0 +1,29 @@
+3.1.1 Analisis Kebutuhan Fungsional
+
+Pada analisis kebutuhan fungsional yaitu menjelaskan fitur-fitur yang ada di website Lapangan Tenis Sukatani. Website tersebut memiliki fitur-fitur yang ditujukan untuk pelanggan dan admin. Masing-masing memiliki fungsi yang berbeda sesuai dengan perannya dalam sistem. Berikut adalah kebutuhan fungsional pelanggan dan admin:
+1. Kebutuhan fungsional, Pelanggan:
+a. Melakukan login dan registrasi akun.
+b. Melihat halaman dashboard (informasi alur booking).
+c. Melihat daftar lapangan beserta harga dan deskripsi.
+d. Melakukan pemesanan (booking) lapangan dengan memilih jadwal, tanggal, dan waktu.
+e. Mengunggah bukti pembayaran.
+f. Melihat riwayat booking dan status pesanan.
+g. Melihat halaman informasi (kontak, fasilitas, dan jam operasional).
+
+2. Kebutuhan Fungsional, Admin:
+a. Melakukan login admin.
+b. Melihat halaman dashboard (ringkasan statistik transaksi dan pendapatan).
+c. Melakukan kelola pemesanan (menyetujui pesanan dan memvalidasi pembayaran).
+d. Melakukan kelola lapangan (menambah, mengubah detail, dan menghapus lapangan).
+e. Melakukan kelola jadwal (memblokir jam atau tanggal tertentu).
+f. Melakukan kelola pengguna (memblokir atau menghapus akun pelanggan).
+g. Melihat halaman laporan rekapitulasi pendapatan dan transaksi.
+
+3.1.2.3 Analisis Kinerja Sistem
+
+Analisis ini berfokus pada kualitas dan performa sistem saat digunakan dalam pengembangan website ini, yaitu:
+1. Tampilan website dirancang agar bisa menyesuaikan secara otomatis dengan berbagai ukuran layar perangkat, baik itu laptop, tablet, maupun smartphone, sehingga tetap nyaman digunakan.
+2. Sistem dilengkapi dengan fitur login dan validasi data agar informasi pribadi pengguna tetap aman dan tidak mudah disalahgunakan.
+3. Website dirancang untuk selalu dapat diakses kapan saja, selama 24 jam dalam 7 hari, tanpa terganggu oleh gangguan teknis.
+4. Setiap proses dalam sistem, seperti membuka halaman, mengirim data, atau melakukan pemesanan, harus berlangsung cepat dan tidak membuat pengguna menunggu terlalu lama.
+5. Struktur sistem dibangun agar mudah diperbarui dan dikembangkan jika di kemudian hari ada penambahan fitur atau perbaikan bug.

@@ -1,0 +1,406 @@
+3.2.1.2 Perancangan Activity Diagram
+
+      Ada dua rancangan activity diagram yaitu untuk pelanggan dan admin digunakan untuk menggambarkan aktifitas saat website digunakan dari awal membuka website sampai keluar website. Activity diagram dibuat sama sesuai use case diagram, sehingga bisa dimengerti proses keseluruhannya. Untuk activity diagram pelanggan terdapat tiga gambar yaitu Gambar 3.3 rancangan activity diagram pelanggan, Gambar 3.4 rancangan activity diagram pelanggan buat akun, dan Gambar 3.5 rancangan activity diagram pelanggan melakukan booking lapangan.
+
+      Selanjutnya terdapat enam gambar pada activity diagram admin yaitu Gambar 3.6 yaitu rancangan activity diagram admin, Gambar 3.7 rancangan activity diagram kelola transaksi, Gambar 3.8 rancangan activity diagram kelola lapangan, Gambar 3.9 rancangan activity diagram kelola jadwal, Gambar 3.10 rancangan activity diagram kelola user, dan Gambar 3.11 rancangan activity diagram laporan.
+
+
+==================================================================================
+BAGIAN 1: RANCANGAN ACTIVITY DIAGRAM PELANGGAN
+==================================================================================
+
+----------------------------------------------------------------------------------
+GAMBAR 3.3 RANCANGAN ACTIVITY DIAGRAM PELANGGAN (SWIMLANE DIAGRAM UTAMA)
+----------------------------------------------------------------------------------
+Diagram ini menggambarkan alur navigasi utama pelanggan dari awal akses website hingga selesai.
+
+[Kode PlantUML Activity Diagram Swimlane - Gambar 3.3]
+@startuml
+|Pelanggan|
+start
+:Mengakses Halaman Login;
+
+|System|
+:Menampilkan Halaman Login;
+
+|Pelanggan|
+:Masukkan Email Dan Password;
+
+|System|
+:Validasi Data;
+repeat
+if (Validasi Data?) then (Salah)
+  |Pelanggan|
+  :Masukkan Email Dan Password;
+  |System|
+  :Validasi Data;
+else (Benar)
+  |System|
+  :Menampilkan Halaman Utama;
+  break
+endif
+repeat while (Coba Lagi?)
+
+|Pelanggan|
+:Memilih Jadwal;
+if (Memilih Jadwal?) then (Ya)
+  |System|
+  :Menampilkan Halaman Jadwal;
+  :Menampilkan Halaman Utama;
+else (Tidak)
+  |Pelanggan|
+  :Memilih Lapangan;
+  if (Memilih Lapangan?) then (Ya)
+    |System|
+    :Menampilkan Halaman Lapangan;
+    :Menampilkan Halaman Utama;
+  else (Tidak)
+    |Pelanggan|
+    :Memilih Pembayaran;
+    if (Memilih Pembayaran?) then (Ya)
+      |System|
+      :Menampilkan Halaman Pembayaran;
+      :Menampilkan Halaman Utama;
+    else (Tidak)
+      |Pelanggan|
+      :Memilih Halaman Utama;
+      if (Kembali ke Halaman Utama?) then (Ya)
+        |System|
+        :Menampilkan Halaman Utama;
+      else (Tidak)
+        |Pelanggan|
+        stop
+      endif
+    endif
+  endif
+endif
+@enduml
+
+
+----------------------------------------------------------------------------------
+GAMBAR 3.4 RANCANGAN ACTIVITY DIAGRAM PELANGGAN BUAT AKUN
+----------------------------------------------------------------------------------
+[Kode PlantUML Activity Diagram Swimlane - Gambar 3.4]
+@startuml
+|Pelanggan|
+start
+:Mengakses Halaman Registrasi;
+:Mengisi Form Registrasi (Nama, Email, No HP, Password);
+
+|System|
+:Validasi Kelengkapan & Keunikan Data;
+if (Data Valid?) then (Ya)
+  :Menyimpan Data Pelanggan Baru ke Database;
+  :Menampilkan Notifikasi Registrasi Berhasil;
+  |Pelanggan|
+  :Membuka Halaman Login;
+  :Memasukkan Email & Password;
+  |System|
+  :Autentikasi Akun;
+  if (Kredensial Sesuai?) then (Ya)
+    :Menampilkan Halaman Dashboard Pelanggan;
+    stop
+  else (Tidak)
+    :Menampilkan Pesan Login Gagal;
+    stop
+  endif
+else (Tidak)
+  |System|
+  :Menampilkan Pesan Error Validasi;
+  stop
+endif
+@enduml
+
+
+----------------------------------------------------------------------------------
+GAMBAR 3.5 RANCANGAN ACTIVITY DIAGRAM PELANGGAN MEMILIH/BOOKING LAPANGAN
+----------------------------------------------------------------------------------
+[Kode PlantUML Activity Diagram Swimlane - Gambar 3.5]
+@startuml
+|Pelanggan|
+start
+:Membuka Halaman Lapangan / Booking;
+:Memilih Lapangan, Tanggal, dan Jam Penyewaan;
+
+|System|
+:Mengecek Ketersediaan Jadwal di Database;
+if (Jadwal Tersedia?) then (Ya)
+  |Pelanggan|
+  :Mengonfirmasi Detail Booking;
+  |System|
+  :Membuat Data Pemesanan Baru (Status: Menunggu Pembayaran);
+  :Menampilkan Halaman Detail Pembayaran & Instruksi Transfer;
+  |Pelanggan|
+  :Mengunggah Foto/File Bukti Pembayaran;
+  |System|
+  :Validasi Format & Ukuran File;
+  if (File Valid?) then (Ya)
+    :Menyimpan File Bukti Pembayaran ke Server;
+    :Update Status Pemesanan (Status: Menunggu Konfirmasi Admin);
+    :Menampilkan Pesan Bukti Pembayaran Berhasil Diunggah;
+    stop
+  else (Tidak)
+    :Menampilkan Pesan Error File Tidak Valid;
+    stop
+  endif
+else (Tidak)
+  |System|
+  :Menampilkan Notifikasi Jadwal Sudah Terisi / Tidak Tersedia;
+  stop
+endif
+@enduml
+
+
+==================================================================================
+BAGIAN 2: RANCANGAN ACTIVITY DIAGRAM ADMIN (DETAIL SWIMLANE)
+==================================================================================
+
+----------------------------------------------------------------------------------
+GAMBAR 3.6 RANCANGAN ACTIVITY DIAGRAM ADMIN (SWIMLANE DIAGRAM UTAMA)
+----------------------------------------------------------------------------------
+Diagram ini menggambarkan alur navigasi utama admin dari awal login hingga mengelola berbagai modul di sistem.
+
+[Kode PlantUML Activity Diagram Swimlane - Gambar 3.6]
+@startuml
+|Admin|
+start
+:Mengakses Halaman Login Admin;
+
+|System|
+:Menampilkan Halaman Login Admin;
+
+|Admin|
+:Masukkan Email/Username Dan Password Admin;
+
+|System|
+:Validasi Kredensial Admin;
+repeat
+if (Validasi Kredensial?) then (Salah)
+  |Admin|
+  :Masukkan Email/Username Dan Password Admin;
+  |System|
+  :Validasi Kredensial Admin;
+else (Benar)
+  |System|
+  :Menampilkan Halaman Dashboard Admin (Ringkasan Statistik);
+  break
+endif
+repeat while (Coba Lagi?)
+
+|Admin|
+:Memilih Kelola Transaksi;
+if (Memilih Kelola Transaksi?) then (Ya)
+  |System|
+  :Menampilkan Halaman Kelola Pemesanan & Pembayaran;
+  :Menampilkan Dashboard Admin;
+else (Tidak)
+  |Admin|
+  :Memilih Kelola Lapangan;
+  if (Memilih Kelola Lapangan?) then (Ya)
+    |System|
+    :Menampilkan Halaman Kelola Data Lapangan;
+    :Menampilkan Dashboard Admin;
+  else (Tidak)
+    |Admin|
+    :Memilih Kelola Jadwal;
+    if (Memilih Kelola Jadwal?) then (Ya)
+      |System|
+      :Menampilkan Halaman Kelola Jadwal / Blokir Jam;
+      :Menampilkan Dashboard Admin;
+    else (Tidak)
+      |Admin|
+      :Memilih Kelola User;
+      if (Memilih Kelola User?) then (Ya)
+        |System|
+        :Menampilkan Halaman Kelola Akun Pelanggan;
+        :Menampilkan Dashboard Admin;
+      else (Tidak)
+        |Admin|
+        :Memilih Laporan;
+        if (Memilih Laporan?) then (Ya)
+          |System|
+          :Menampilkan Halaman Laporan Rekapitulasi;
+          :Menampilkan Dashboard Admin;
+        else (Tidak)
+          |Admin|
+          :Memilih Logout;
+          |System|
+          :Proses Logout & Hapus Sesi;
+          :Menampilkan Halaman Login Admin;
+          stop
+        endif
+      endif
+    endif
+  endif
+endif
+@enduml
+
+
+----------------------------------------------------------------------------------
+GAMBAR 3.7 RANCANGAN ACTIVITY DIAGRAM KELOLA TRANSAKSI (ADMIN)
+----------------------------------------------------------------------------------
+[Kode PlantUML Activity Diagram Swimlane - Gambar 3.7]
+@startuml
+|Admin|
+start
+:Membuka Halaman Kelola Transaksi / Pemesanan;
+
+|System|
+:Menampilkan Daftar Seluruh Transaksi Booking Pelanggan;
+
+|Admin|
+:Memilih Salah Satu Transaksi Pemesanan;
+:Melihat Detail Pesanan & Memeriksa File Bukti Pembayaran;
+
+|System|
+:Menampilkan Gambar Bukti Pembayaran & Data Transfer;
+
+|Admin|
+:Memverifikasi Keabsahan Bukti Pembayaran;
+if (Bukti Valid / Lunas?) then (Ya)
+  :Mengklik Tombol "Setujui / Konfirmasi";
+  |System|
+  :Update Status Transaksi Menjadi "Lunas";
+  :Update Status Jadwal Lapangan Menjadi "Terisi";
+  :Menampilkan Notifikasi Pesanan Berhasil Dikonfirmasi;
+  stop
+else (Tidak)
+  |Admin|
+  :Mengklik Tombol "Tolak Pesanan" & Isi Catatan Alasan;
+  |System|
+  :Update Status Transaksi Menjadi "Dibatalkan";
+  :Melepaskan Jadwal Lapangan Agar Bisa Dipesan Lagi;
+  :Menampilkan Notifikasi Pesanan Dibatalkan;
+  stop
+endif
+@enduml
+
+
+----------------------------------------------------------------------------------
+GAMBAR 3.8 RANCANGAN ACTIVITY DIAGRAM KELOLA LAPANGAN (ADMIN)
+----------------------------------------------------------------------------------
+[Kode PlantUML Activity Diagram Swimlane - Gambar 3.8]
+@startuml
+|Admin|
+start
+:Membuka Halaman Kelola Lapangan;
+
+|System|
+:Menampilkan Daftar Data Lapangan Tenis;
+
+|Admin|
+:Memilih Aksi (Tambah Lapangan / Edit Lapangan / Hapus Lapangan);
+if (Aksi Yang Dipilih?) then (Tambah / Edit)
+  |Admin|
+  :Mengisi Form Data Lapangan (Nama, Harga per Jam, Deskripsi, Fasilitas, Foto);
+  |System|
+  :Validasi Form Data Lapangan;
+  if (Data Valid?) then (Ya)
+    :Simpan / Update Data Lapangan ke Database;
+    :Menampilkan Pesan Sukses Perubahan Data;
+    stop
+  else (Tidak)
+    :Menampilkan Pesan Kesalahan Form Input;
+    stop
+  endif
+else (Hapus)
+  |Admin|
+  :Konfirmasi Hapus Data Lapangan;
+  |System|
+  :Menghapus Data Lapangan dari Database;
+  :Menampilkan Pesan Data Berhasil Dihapus;
+  stop
+endif
+@enduml
+
+
+----------------------------------------------------------------------------------
+GAMBAR 3.9 RANCANGAN ACTIVITY DIAGRAM KELOLA JADWAL (ADMIN)
+----------------------------------------------------------------------------------
+[Kode PlantUML Activity Diagram Swimlane - Gambar 3.9]
+@startuml
+|Admin|
+start
+:Membuka Halaman Kelola Jadwal;
+
+|System|
+:Menampilkan Kalender & Matriks Jadwal Lapangan;
+
+|Admin|
+:Memilih Lapangan, Tanggal, dan Jam yang Ingin Dikelola;
+:Memilih Aksi Blokir Jadwal (Maintenance / Turnamen / Libur);
+
+|System|
+:Mengecek Status Jadwal Saat Ini;
+if (Jadwal Sedang Kosong?) then (Ya)
+  |Admin|
+  :Mengonfirmasi Pemblokiran Jadwal & Mengisi Keterangan Alasan;
+  |System|
+  :Update Status Jadwal Menjadi "Diblokir / Nonaktif";
+  :Menampilkan Notifikasi Jadwal Berhasil Diblokir;
+  stop
+else (Tidak)
+  |System|
+  :Menampilkan Peringatan (Jadwal Sudah Ada Pesanan Lunas);
+  stop
+endif
+@enduml
+
+
+----------------------------------------------------------------------------------
+GAMBAR 3.10 RANCANGAN ACTIVITY DIAGRAM KELOLA USER (ADMIN)
+----------------------------------------------------------------------------------
+[Kode PlantUML Activity Diagram Swimlane - Gambar 3.10]
+@startuml
+|Admin|
+start
+:Membuka Halaman Kelola User / Pengguna;
+
+|System|
+:Menampilkan Daftar Akun Pelanggan yang Terdaftar;
+
+|Admin|
+:Mencari / Memilih Akun Pelanggan;
+:Memilih Aksi (Nonaktifkan / Blokir Akun / Hapus Akun);
+
+|System|
+:Menampilkan Dialog Konfirmasi Tindakan;
+
+|Admin|
+:Mengonfirmasi Tindakan;
+
+|System|
+:Update Status Akun di Database (Nonaktif / Hapus);
+:Menampilkan Notifikasi Perubahan Status Akun Berhasil;
+stop
+@enduml
+
+
+----------------------------------------------------------------------------------
+GAMBAR 3.11 RANCANGAN ACTIVITY DIAGRAM LAPORAN (ADMIN)
+----------------------------------------------------------------------------------
+[Kode PlantUML Activity Diagram Swimlane - Gambar 3.11]
+@startuml
+|Admin|
+start
+:Membuka Halaman Laporan;
+
+|System|
+:Menampilkan Form Filter Periode Laporan;
+
+|Admin|
+:Memilih Periode Laporan (Bulan dan Tahun);
+:Mengklik Tombol "Tampilkan Laporan";
+
+|System|
+:Query Data Transaksi Berstatus "Lunas" Sesuai Periode;
+:Menampilkan Tabel Rekapitulasi Transaksi & Total Pendapatan;
+
+|Admin|
+:Mengklik Tombol "Cetak / Export Laporan";
+
+|System|
+:Generate Dokumen Laporan (File PDF / Excel);
+:Mengunduh File Laporan ke Perangkat Admin;
+stop
+@enduml

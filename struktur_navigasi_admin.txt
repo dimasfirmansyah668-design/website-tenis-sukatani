@@ -1,0 +1,168 @@
+==================================================================================
+              PERANCANGAN STRUKTUR NAVIGASI ADMIN (ADMIN NAVIGATION)
+==================================================================================
+Nama Proyek     : Sistem Penyewaan / Booking Lapangan Tenis Sukatani
+Modul Sistem    : Pengelola / Admin
+File Dokumen    : struktur_navigasi_admin.txt
+==================================================================================
+
+----------------------------------------------------------------------------------
+1. DIAGRAM RANCANGAN STRUKTUR NAVIGASI ADMIN (Gambar 3.14)
+----------------------------------------------------------------------------------
+
+                                  +----------+
+                                  |  Login   |
+                                  | (/login) |
+                                  +----+-----+
+                                       |
+                                       v
+  +-----------+-----------+------------+------------+-----------+-----------+
+  |           |           |                         |           |           |
+  <--->       <--->       <--->                     <--->       <--->       <--->
+  |           |           |                         |           |           |
++-+-------+ +-+-------+ +-+-------+               +-+-------+ +-+-------+ +-+-------+
+|Dashboard| |Pemesanan| | Kelola  |               | Kelola  | | Kelola  | | Laporan | | Keluar  |
+|  Admin  | | (Booking| |Lapangan |               | Jadwal  | |  User   | |Transaksi| | (Logout)|
+|(/admin) | |/pemesa- | |/lapangan|               | /jadwal | | /users  | |/laporan | |         |
+|         | |   nan)  | |         |               |         | |         | |         | |         |
++---------+ +----+----+ +----+----+               +----+----+ +----+----+ +----+----+ +---------+
+                 |           |                         |           |           |
+                 <--->       <--->                     <--->       <--->       <--->
+                 |           |                         |           |           |
+   +-------------+---+   +---+-------+             +---+---+   +---+---+   +---+---+
+   |     |     |     |   |     |     |             |       |   |       |   |       |
+   <->   <->   <->   <-> <->   <->   <->           <->     <-> <->     <-> <->     <->
+   |     |     |     |   |     |     |             |       |   |       |   |       |
+ +-+--+ +-+--+ +-+--+ +-+--+ +-+--+ +-+--+ +-+--+  +-+---+ +-+---+ +-+---+ +-+---+ +-+---+ +-+---+
+ |De- | |Val-| |Kon-| |Bat-| |Tam-| |Edit| |Ha- |  |Tam- | |Ha-  | |Sta- | |Ha-  | |Fil- | |Ce-  |
+ |tail| |idasi| |fir-| |al- | |bah | |Lapa| |pus |  |bah  | |pus  | |tus  | |pus  | |ter  | |tak  |
+ |Pesa| |Bayar| |masi| |kan | |Lapa| |ngan| |Lapa|  |Blok-| |Blok-| |User | |User | |Bulan| |PDF  |
+ |nan | |    | |    | |    | |ngan| |    | |ngan|  |ir   | |ir   | |    | |    | |    | |    |
+ +----+ +----+ +----+ +----+ +----+ +----+ +----+  +-----+ +-----+ +-----+ +-----+ +-----+ +-----+
+
+
+----------------------------------------------------------------------------------
+2. PENJELASAN STRUKTUR NAVIGASI ADMIN (NARASI PARAGRAF)
+----------------------------------------------------------------------------------
+
+      Struktur Navigasi Admin Gambar 3.14 terdapat susunan menu dan halaman yang dirancang untuk memudahkan pengelola dalam mengontrol dan mengoperasikan sistem. Di dalamnya, admin terlebih dahulu harus melakukan login untuk dapat masuk ke panel dashboard utama. Admin yang sudah melakukan login bisa mengakses menu dashboard admin, kelola pemesanan, kelola lapangan, kelola jadwal, kelola user, dan laporan transaksi. Pada menu kelola pemesanan admin dapat melihat detail pesanan, memvalidasi bukti pembayaran, serta mengonfirmasi atau membatalkan pesanan. Pada menu kelola lapangan admin dapat menambah lapangan, mengedit data lapangan, dan menghapus lapangan. Pada menu kelola jadwal admin dapat menambah slot blokir dan menghapus slot blokir untuk perawatan lapangan. Pada menu kelola user admin dapat mengubah status keaktifan user dan menghapus akun user. Pada menu laporan transaksi admin dapat memilih filter periode bulan dan mencetak laporan pendapatan.
+
+
+----------------------------------------------------------------------------------
+3. PETA ROUTING & AKSES FITUR NAVIGASI ADMIN
+----------------------------------------------------------------------------------
+
++--------------------+--------------------+---------------------------------------+
+| Route Path         | Nama Halaman       | Fitur & Akses Sub-Menu                |
++--------------------+--------------------+---------------------------------------+
+| /login             | Login Admin        | Autentikasi akun admin                |
+| /admin             | Dashboard Admin    | Ringkasan statistik & total pesanan   |
+| /admin/pemesanan   | Kelola Pemesanan   | Detail pesanan, validasi bukti bayar, |
+|                    |                    | konfirmasi & pembatalan               |
+| /admin/lapangan    | Kelola Lapangan    | Tambah, edit, hapus, & status aktif   |
+| /admin/jadwal      | Kelola Jadwal      | Tambah & hapus slot blokir jadwal     |
+| /admin/users       | Kelola User        | Status keaktifan (aktif/blokir) &     |
+|                    |                    | hapus user                            |
+| /admin/laporan     | Laporan Transaksi  | Filter periode bulan & cetak PDF/print|
++--------------------+--------------------+---------------------------------------+
+
+
+----------------------------------------------------------------------------------
+4. KODE MERMAID DOKUMEN (UNTUK DRAW.IO)
+----------------------------------------------------------------------------------
+
+```mermaid
+graph TD
+    Login["Login Admin<br/>(/login)"]
+    Dashboard["Dashboard Admin<br/>(/admin)"]
+    Pemesanan["Kelola Pemesanan<br/>(/admin/pemesanan)"]
+    Lapangan["Kelola Lapangan<br/>(/admin/lapangan)"]
+    Jadwal["Kelola Jadwal<br/>(/admin/jadwal)"]
+    Users["Kelola User<br/>(/admin/users)"]
+    Laporan["Laporan Transaksi<br/>(/admin/laporan)"]
+    Logout["Keluar<br/>(Logout)"]
+
+    DetailP["Detail Pesanan"]
+    ValBayar["Validasi Pembayaran"]
+    KonfirmP["Konfirmasi Pesanan"]
+    BatalP["Batalkan Pesanan"]
+
+    TambahL["Tambah Lapangan"]
+    EditL["Edit Lapangan"]
+    HapusL["Hapus Lapangan"]
+
+    TambahJ["Tambah Slot Blokir"]
+    HapusJ["Hapus Slot Blokir"]
+
+    StatusU["Status User (Aktif/Blokir)"]
+    HapusU["Hapus User"]
+
+    FilterL["Filter Periode Bulan"]
+    CetakL["Cetak Laporan (PDF/Print)"]
+
+    Login --> Dashboard
+    Login <--> Pemesanan
+    Login <--> Lapangan
+    Login <--> Jadwal
+    Login <--> Users
+    Login <--> Laporan
+    Login --> Logout
+
+    Pemesanan <--> DetailP
+    Pemesanan <--> ValBayar
+    Pemesanan <--> KonfirmP
+    Pemesanan <--> BatalP
+
+    Lapangan <--> TambahL
+    Lapangan <--> EditL
+    Lapangan <--> HapusL
+
+    Jadwal <--> TambahJ
+    Jadwal <--> HapusJ
+
+    Users <--> StatusU
+    Users <--> HapusU
+
+    Laporan <--> FilterL
+    Laporan <--> CetakL
+```
+
+
+----------------------------------------------------------------------------------
+5. KODE PLANTUML DOKUMEN (UNTUK WORD / DRAW.IO)
+----------------------------------------------------------------------------------
+
+@startuml
+skinparam monochrome true
+skinparam packageStyle rect
+
+package "Rancangan Struktur Navigasi Admin Sukatani Tenis" {
+  [Login Admin (/login)] --> [Dashboard Admin (/admin)]
+  [Login Admin (/login)] <--> [Pemesanan (/admin/pemesanan)]
+  [Login Admin (/login)] <--> [Kelola Lapangan (/admin/lapangan)]
+  [Login Admin (/login)] <--> [Kelola Jadwal (/admin/jadwal)]
+  [Login Admin (/login)] <--> [Kelola User (/admin/users)]
+  [Login Admin (/login)] <--> [Laporan Transaksi (/admin/laporan)]
+  [Login Admin (/login)] --> [Keluar (Logout)]
+
+  [Pemesanan (/admin/pemesanan)] <--> [Detail Pesanan]
+  [Pemesanan (/admin/pemesanan)] <--> [Validasi Pembayaran]
+  [Pemesanan (/admin/pemesanan)] <--> [Konfirmasi Pesanan]
+  [Pemesanan (/admin/pemesanan)] <--> [Batalkan Pesanan]
+
+  [Kelola Lapangan (/admin/lapangan)] <--> [Tambah Lapangan]
+  [Kelola Lapangan (/admin/lapangan)] <--> [Edit Lapangan]
+  [Kelola Lapangan (/admin/lapangan)] <--> [Hapus Lapangan]
+
+  [Kelola Jadwal (/admin/jadwal)] <--> [Tambah Slot Blokir]
+  [Kelola Jadwal (/admin/jadwal)] <--> [Hapus Slot Blokir]
+
+  [Kelola User (/admin/users)] <--> [Status User (Aktif/Blokir)]
+  [Kelola User (/admin/users)] <--> [Hapus User]
+
+  [Laporan Transaksi (/admin/laporan)] <--> [Filter Periode Bulan]
+  [Laporan Transaksi (/admin/laporan)] <--> [Cetak Laporan (PDF/Print)]
+}
+@enduml
+
+==================================================================================

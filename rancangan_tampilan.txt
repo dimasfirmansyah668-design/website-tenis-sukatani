@@ -1,0 +1,61 @@
+==================================================================================
+        PERANCANGAN TAMPILAN HALAMAN WEBSITE LAPANGAN TENIS SUKATANI
+==================================================================================
+Nama Proyek     : Sistem Penyewaan / Booking Lapangan Tenis Sukatani
+Jenis Dokumen   : Perancangan Tampilan Halaman (UI Narrative Descriptions)
+File Dokumen    : rancangan_tampilan.txt
+==================================================================================
+
+----------------------------------------------------------------------------------
+1. PERANCANGAN TAMPILAN HALAMAN PELANGGAN (USER INTERFACE)
+----------------------------------------------------------------------------------
+
+Perancangan tampilan halaman website untuk pelanggan sebagai berikut:
+
+1. Perancangan Tampilan Pada Halaman Login Pelanggan
+      Tampilan pada halaman Login Pelanggan dirancang terdapat text, text form field, button, dan text button. Text digunakan sebagai informasi judul dan panduan untuk pelanggan, text form field digunakan sebagai tempat untuk memasukkan email dan password pelanggan, satu button dengan text "Masuk" digunakan untuk pelanggan yang sudah memasukkan email dan password agar dapat masuk ke dalam website, serta text button dengan text "Daftar sekarang" digunakan sebagai navigasi untuk menuju ke halaman Register. Rancangan halaman Login Pelanggan dapat dilihat pada Gambar 3.16.
+
+2. Perancangan Tampilan Pada Halaman Register Pelanggan
+      Tampilan pada halaman Register Pelanggan dirancang terdapat text, text form field, button, dan text button. Text digunakan sebagai informasi judul pendaftaran akun baru, text form field digunakan sebagai tempat untuk memasukkan nama lengkap, email, nomor WhatsApp/HP, dan password pelanggan, satu button dengan text "Daftar Sekarang" digunakan untuk mendaftarkan akun baru ke dalam sistem, serta text button dengan text "Masuk" digunakan sebagai navigasi untuk kembali ke halaman Login. Rancangan halaman Register Pelanggan dapat dilihat pada Gambar 3.17.
+
+3. Perancangan Tampilan Pada Halaman Beranda / Informasi
+      Tampilan pada halaman Beranda / Informasi dirancang terdapat text, banner image, card field, dan button. Text digunakan sebagai informasi judul utama, deskripsi arena, serta informasi kontak dan jam operasional (07:00 - 22:00 WIB), banner image digunakan sebagai tampilan visual utama arena tenis Sukatani, card field digunakan untuk menampilkan 4 langkah panduan alur booking, serta button dengan text "Pesan Lapangan Sekarang" digunakan sebagai navigasi untuk menuju ke halaman Booking. Rancangan halaman Beranda / Informasi dapat dilihat pada Gambar 3.18.
+
+4. Perancangan Tampilan Pada Halaman Katalog Lapangan
+      Tampilan pada halaman Katalog Lapangan dirancang terdapat text, search field, card field, image, dan button. Text digunakan sebagai judul halaman katalog, search field digunakan sebagai fasilitas untuk mencari nama lapangan tenis, card field berisi image foto lapangan, tarif harga per jam, deskripsi singkat, serta fasilitas lapangan, button dengan text "Detail" digunakan untuk menampilkan spesifikasi lengkap lapangan, dan button dengan text "Pesan Sekarang" digunakan sebagai navigasi langsung ke halaman Form Booking. Rancangan halaman Katalog Lapangan dapat dilihat pada Gambar 3.19.
+
+5. Perancangan Tampilan Pada Halaman Form Booking
+      Tampilan pada halaman Form Booking dirancang terdapat text, dropdown selection, date picker, text form field, card ringkasan biaya, dan button. Text digunakan sebagai petunjuk pengisian formulir pemesanan, dropdown selection digunakan untuk memilih lapangan tenis serta jam mulai dan jam selesai sewa, date picker digunakan untuk menentukan tanggal sewa lapangan, text form field digunakan untuk mengisi catatan khusus pemesanan, card ringkasan biaya digunakan untuk menampilkan kalkulasi total durasi dan total biaya tagihan secara otomatis, serta button dengan text "Buat Pesanan Sekarang" digunakan untuk mengirim data transaksi pemesanan. Rancangan halaman Form Booking dapat dilihat pada Gambar 3.20.
+
+6. Perancangan Tampilan Pada Halaman Riwayat Booking
+      Tampilan pada halaman Riwayat Booking dirancang terdapat text, table field, badge status, dan button. Text digunakan sebagai judul informasi riwayat pesanan pelanggan, table field digunakan untuk menampilkan rincian tiket pesanan seperti ID booking, nama lapangan, tanggal, jam main, dan total biaya, badge status digunakan sebagai penanda status booking (Pending/Dikonfirmasi) serta status pembayaran (Belum Bayar/Sudah Bayar), button dengan text "Upload Bukti Bayar" digunakan untuk membuka modal unggah resi transfer pembayaran, dan button dengan text "Konfirmasi WhatsApp" digunakan untuk mengarahkan pelanggan menghubungi admin secara langsung. Rancangan halaman Riwayat Booking dapat dilihat pada Gambar 3.21.
+
+
+----------------------------------------------------------------------------------
+2. PERANCANGAN TAMPILAN HALAMAN ADMIN (ADMIN PANEL INTERFACE)
+----------------------------------------------------------------------------------
+
+Perancangan tampilan halaman website untuk admin sebagai berikut:
+
+1. Perancangan Tampilan Pada Halaman Login Admin
+      Tampilan pada halaman Login Admin dirancang terdapat text, text form field, dan button. Text digunakan sebagai judul panel autentikasi pengelola sistem, text form field digunakan sebagai tempat untuk memasukkan email dan password khusus admin, serta button dengan text "Masuk Admin" digunakan untuk memverifikasi hak akses admin agar dapat masuk ke dalam dashboard panel pengelola. Rancangan halaman Login Admin dapat dilihat pada Gambar 3.22.
+
+2. Perancangan Tampilan Pada Halaman Dashboard Admin
+      Tampilan pada halaman Dashboard Admin dirancang terdapat sidebar navigation, text, card statistic, dan table field. Sidebar navigation digunakan sebagai menu navigasi utama pengelola untuk berpindah antar-halaman admin, text digunakan sebagai judul halaman dan sapaan admin, card statistic digunakan untuk menampilkan ringkasan data total pesanan, total pendapatan, jumlah pelanggan terdaftar, dan pesanan masuk hari ini, serta table field digunakan untuk menampilkan daftar transaksi penyewaan terbaru. Rancangan halaman Dashboard Admin dapat dilihat pada Gambar 3.23.
+
+3. Perancangan Tampilan Pada Halaman Kelola Pemesanan
+      Tampilan pada halaman Kelola Pemesanan dirancang terdapat sidebar navigation, text, tab filter status, table field, dan button. Sidebar navigation digunakan sebagai menu navigasi pengelola, tab filter status digunakan untuk menyaring transaksi berdasarkan status (Pending, Dikonfirmasi, Selesai, Dibatalkan), table field digunakan untuk menampilkan data pemesanan seluruh pelanggan, button dengan text "Resi" digunakan untuk menampilkan modal foto bukti transfer pembayaran pelanggan, button dengan text "Setuju" digunakan untuk mengonfirmasi pesanan lunas, serta button dengan text "Batal" digunakan untuk membatalkan pesanan tidak valid. Rancangan halaman Kelola Pemesanan dapat dilihat pada Gambar 3.24.
+
+4. Perancangan Tampilan Pada Halaman Kelola Lapangan
+      Tampilan pada halaman Kelola Lapangan dirancang terdapat sidebar navigation, text, table field, dan button. Sidebar navigation digunakan sebagai navigasi menu admin, button dengan text "+ Tambah Lapangan" digunakan untuk membuka modal formulir penambahan unit lapangan tenis baru, table field digunakan untuk menampilkan master data lapangan beserta foto, harga per jam, dan status aktif, serta button dengan text "Edit" dan "Hapus" digunakan untuk memperbarui data atau menghapus data lapangan dari sistem. Rancangan halaman Kelola Lapangan dapat dilihat pada Gambar 3.25.
+
+5. Perancangan Tampilan Pada Halaman Kelola Jadwal (Slot Blokir)
+      Tampilan pada halaman Kelola Jadwal dirancang terdapat sidebar navigation, text, table field, dan button. Sidebar navigation digunakan sebagai navigasi menu admin, button dengan text "+ Tambah Slot Blokir" digunakan untuk membuka modal pemblokiran tanggal dan jam operasional lapangan (dengan alasan perbaikan/turnamen), table field digunakan untuk menampilkan rincian jadwal slot yang sedang diblokir, serta button dengan text "Hapus" digunakan untuk membocorkan/membuka kembali slot jadwal operasional. Rancangan halaman Kelola Jadwal dapat dilihat pada Gambar 3.26.
+
+6. Perancangan Tampilan Pada Halaman Kelola User
+      Tampilan pada halaman Kelola User dirancang terdapat sidebar navigation, text, search field, table field, dan button. Sidebar navigation digunakan sebagai navigasi menu admin, search field digunakan untuk mencari nama atau email pelanggan, table field digunakan untuk menampilkan daftar akun pelanggan terdaftar, button dengan text "Blokir" digunakan untuk mengubah status keaktifan user yang bermasalah, serta button dengan text "Hapus" digunakan untuk menghapus data pelanggan dari database. Rancangan halaman Kelola User dapat dilihat pada Gambar 3.27.
+
+7. Perancangan Tampilan Pada Halaman Laporan Transaksi
+      Tampilan pada halaman Laporan Transaksi dirancang terdapat sidebar navigation, text, dropdown selection, card rekapitulasi, dan button. Sidebar navigation digunakan sebagai navigasi menu admin, dropdown selection digunakan untuk menyaring periode bulan dan tahun laporan, card rekapitulasi digunakan untuk menampilkan ringkasan jumlah transaksi sukses dan total pendapatan bersih, serta button dengan text "Cetak / Export PDF" digunakan untuk mencetak dokumen laporan keuangan bulanan. Rancangan halaman Laporan Transaksi dapat dilihat pada Gambar 3.28.
+
+==================================================================================

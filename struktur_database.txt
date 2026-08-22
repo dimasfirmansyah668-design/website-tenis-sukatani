@@ -1,0 +1,219 @@
+==================================================================================
+              STRUKTUR DATABASE SISTEM BOOKING LAPANGAN TENIS
+==================================================================================
+Nama Proyek     : Sistem Penyewaan / Booking Lapangan Tenis Sukatani
+Database Engine : SQLite (Kompatibel dengan MySQL/PostgreSQL)
+ORM Framework   : Sequelize (Node.js Express)
+File Dokumen    : struktur_database.txt
+==================================================================================
+
+----------------------------------------------------------------------------------
+1. INFORMASI UMUM ARSITEKTUR DATABASE
+----------------------------------------------------------------------------------
+Database ini dirancang untuk mendukung operasional sistem penyewaan lapangan tenis,
+mencakup autentikasi akun pengguna (User & Admin), kelola data arena (Lapangan),
+pemesanan dan transaksi (Booking), serta penutupan/pemblokiran jadwal sementara (SlotBlokir).
+
+Terdapat 4 tabel utama:
+1. `users`       : Menyimpan kredensial dan hak akses pengguna/admin.
+2. `lapangan`    : Menyimpan data ketersediaan, jam operasional, dan tarif lapangan.
+3. `bookings`    : Menyimpan seluruh transaksi pemesanan lapangan oleh pengguna.
+4. `slot_blokir` : Menyimpan jadwal penutupan slot waktu (perawatan/turnamen).
+
+
+----------------------------------------------------------------------------------
+2. DESKRIPSI DETIL TABEL & KAMUS DATA (DATA DICTIONARY)
+----------------------------------------------------------------------------------
+
+=========================================================
+A. TABEL: `users`
+=========================================================
+Deskripsi: Menyimpan informasi akun pengguna (Pengunjung/User & Pengelola/Admin).
+
++------------------+---------------+---------------+---------------+-----------------------+
+| Nama Field       | Tipe Data     | Atribut       | Nullable      | Keterangan / Default  |
++------------------+---------------+---------------+---------------+-----------------------+
+| id               | INTEGER       | PK, Auto Inc  | NOT NULL      | Unique Identifier     |
+| nama             | VARCHAR(255)  | -             | NOT NULL      | Nama lengkap pengguna |
+| email            | VARCHAR(255)  | UNIQUE        | NOT NULL      | Email aktif (Login)   |
+| no_hp            | VARCHAR(50)   | -             | NOT NULL      | Nomor WhatsApp/HP     |
+| password         | VARCHAR(255)  | -             | NOT NULL      | Hashed Password       |
+| role             | ENUM          | ('user','admin') NOT NULL     | Default: 'user'       |
+| is_active        | BOOLEAN       | -             | NOT NULL      | Default: true (1)     |
+| createdAt        | DATETIME      | -             | NOT NULL      | Waktu pembuatan akun  |
+| updatedAt        | DATETIME      | -             | NOT NULL      | Waktu update terakhir |
++------------------+---------------+---------------+---------------+-----------------------+
+
+=========================================================
+B. TABEL: `lapangan`
+=========================================================
+Deskripsi: Menyimpan data master lapangan tenis, harga, dan operasional.
+
++------------------+---------------+---------------+---------------+-----------------------+
+| Nama Field       | Tipe Data     | Atribut       | Nullable      | Keterangan / Default  |
++------------------+---------------+---------------+---------------+-----------------------+
+| id               | INTEGER       | PK, Auto Inc  | NOT NULL      | Unique Identifier     |
+| nama             | VARCHAR(255)  | -             | NOT NULL      | Nama Lapangan         |
+| harga_per_jam    | INTEGER       | -             | NOT NULL      | Tarif per jam (Rp)    |
+| foto_url         | VARCHAR(255)  | -             | NULL          | Path/URL foto lapangan|
+| deskripsi        | TEXT          | -             | NULL          | Deskripsi & spesifikasi|
+| fasilitas        | TEXT          | JSON Array    | NULL          | Daftar fasilitas (JSON)|
+| status           | ENUM          | ('aktif','nonaktif') NOT NULL | Default: 'aktif'      |
+| jam_buka         | VARCHAR(10)   | -             | NOT NULL      | Default: '07:00'      |
+| jam_tutup        | VARCHAR(10)   | -             | NOT NULL      | Default: '22:00'      |
+| createdAt        | DATETIME      | -             | NOT NULL      | Waktu entri data      |
+| updatedAt        | DATETIME      | -             | NOT NULL      | Waktu update terakhir |
++------------------+---------------+---------------+---------------+-----------------------+
+
+=========================================================
+C. TABEL: `bookings`
+=========================================================
+Deskripsi: Menyimpan data pemesanan lapangan oleh pengguna.
+
++-------------------+---------------+---------------+---------------+-----------------------+
+| Nama Field        | Tipe Data     | Atribut       | Nullable      | Keterangan / Default  |
++-------------------+---------------+---------------+---------------+-----------------------+
+| id                | INTEGER       | PK, Auto Inc  | NOT NULL      | Unique Identifier     |
+| user_id           | INTEGER       | FK (users.id) | NOT NULL      | ID pemesan (User)     |
+| lapangan_id       | INTEGER       | FK (lapangan.id) NOT NULL     | ID lapangan disewa    |
+| tanggal           | DATE          | -             | NOT NULL      | Format: YYYY-MM-DD    |
+| jam_mulai         | VARCHAR(10)   | -             | NOT NULL      | Jam mulai (HH:mm)     |
+| jam_selesai       | VARCHAR(10)   | -             | NOT NULL      | Jam selesai (HH:mm)   |
+| durasi            | INTEGER       | -             | NOT NULL      | Total durasi (Jam)    |
+| total_harga       | INTEGER       | -             | NOT NULL      | Total tagihan (Rp)    |
+| status            | ENUM          | *1            | NOT NULL      | Default: 'pending'    |
+| status_pembayaran | ENUM          | *2            | NOT NULL      | Default: 'belum_bayar'|
+| catatan           | TEXT          | -             | NULL          | Catatan khusus pemesan|
+| alasan_batal      | TEXT          | -             | NULL          | Alasan pembatalan     |
+| whatsapp_sent     | BOOLEAN       | -             | NOT NULL      | Default: false (0)    |
+| createdAt         | DATETIME      | -             | NOT NULL      | Waktu transaksi dibuat|
+| updatedAt         | DATETIME      | -             | NOT NULL      | Waktu update terakhir |
++-------------------+---------------+---------------+---------------+-----------------------+
+Keterangan Opsi ENUM:
+*1 Status Booking: ('pending', 'dikonfirmasi', 'selesai', 'dibatalkan')
+*2 Status Pembayaran: ('belum_bayar', 'sudah_bayar')
+
+=========================================================
+D. TABEL: `slot_blokir`
+=========================================================
+Deskripsi: Menyimpan jadwal pemblokiran slot waktu lapangan oleh Admin (Maintenance/Turnamen).
+
++------------------+---------------+---------------+---------------+-----------------------+
+| Nama Field       | Tipe Data     | Atribut       | Nullable      | Keterangan / Default  |
++------------------+---------------+---------------+---------------+-----------------------+
+| id               | INTEGER       | PK, Auto Inc  | NOT NULL      | Unique Identifier     |
+| lapangan_id      | INTEGER       | FK (lapangan.id) NOT NULL     | ID lapangan diblokir  |
+| tanggal          | DATE          | -             | NOT NULL      | Tanggal blokir        |
+| jam_mulai        | VARCHAR(10)   | -             | NOT NULL      | Jam mulai blokir      |
+| jam_selesai      | VARCHAR(10)   | -             | NOT NULL      | Jam selesai blokir    |
+| alasan           | VARCHAR(255)  | -             | NULL          | Default: 'Maintenance'|
+| createdAt        | DATETIME      | -             | NOT NULL      | Waktu entri data      |
+| updatedAt        | DATETIME      | -             | NOT NULL      | Waktu update terakhir |
++------------------+---------------+---------------+---------------+-----------------------+
+
+
+----------------------------------------------------------------------------------
+3. HUBUNGAN ANTAR TABEL (RELATIONSHIPS & ASSOCIATIONS)
+----------------------------------------------------------------------------------
+
+  +-----------------+           +-----------------+
+  |      users      |           |    lapangan     |
+  +-----------------+           +-----------------+
+  | PK: id          |           | PK: id          |
+  +--------+--------+           +----+--------+---+
+           |                         |        |
+           | (1)                     | (1)    | (1)
+           |                         |        |
+           | hasMany                 |        | hasMany
+           v                         v        v
+  +--------+-------------------------+---+  +-+-------------------+
+  |             bookings                 |  |     slot_blokir     |
+  +--------------------------------------+  +---------------------+
+  | PK: id                               |  | PK: id              |
+  | FK: user_id                          |  | FK: lapangan_id     |
+  | FK: lapangan_id                      |  +---------------------+
+  +--------------------------------------+
+
+Keterangan Relasi:
+1. `users` -> `bookings`
+   - Relasi      : One-to-Many (1 : N)
+   - Penjelasan  : Satu pengguna (user) dapat membuat banyak transaksi booking. Satu transaksi booking hanya dimiliki oleh 1 user.
+   - Foreign Key : `bookings.user_id` -> `users.id`
+
+2. `lapangan` -> `bookings`
+   - Relasi      : One-to-Many (1 : N)
+   - Penjelasan  : Satu lapangan tenis dapat memiliki banyak jadwal booking. Satu booking hanya terjadi di 1 lapangan.
+   - Foreign Key : `bookings.lapangan_id` -> `lapangan.id`
+
+3. `lapangan` -> `slot_blokir`
+   - Relasi      : One-to-Many (1 : N)
+   - Penjelasan  : Satu lapangan tenis dapat memiliki banyak slot blokir waktu (misal untuk perawatan atau acara internal).
+   - Foreign Key : `slot_blokir.lapangan_id` -> `lapangan.id`
+
+
+----------------------------------------------------------------------------------
+4. SCRIPT QUERY SQL DDL (CREATE TABLE)
+----------------------------------------------------------------------------------
+
+-- 1. Tabel Users
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nama VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  no_hp VARCHAR(50) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  role TEXT CHECK(role IN ('user', 'admin')) NOT NULL DEFAULT 'user',
+  is_active BOOLEAN NOT NULL DEFAULT 1,
+  createdAt DATETIME NOT NULL,
+  updatedAt DATETIME NOT NULL
+);
+
+-- 2. Tabel Lapangan
+CREATE TABLE IF NOT EXISTS lapangan (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nama VARCHAR(255) NOT NULL,
+  harga_per_jam INTEGER NOT NULL,
+  foto_url VARCHAR(255) DEFAULT NULL,
+  deskripsi TEXT DEFAULT '',
+  fasilitas TEXT DEFAULT '',
+  status TEXT CHECK(status IN ('aktif', 'nonaktif')) NOT NULL DEFAULT 'aktif',
+  jam_buka VARCHAR(10) NOT NULL DEFAULT '07:00',
+  jam_tutup VARCHAR(10) NOT NULL DEFAULT '22:00',
+  createdAt DATETIME NOT NULL,
+  updatedAt DATETIME NOT NULL
+);
+
+-- 3. Tabel Bookings
+CREATE TABLE IF NOT EXISTS bookings (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  lapangan_id INTEGER NOT NULL,
+  tanggal DATE NOT NULL,
+  jam_mulai VARCHAR(10) NOT NULL,
+  jam_selesai VARCHAR(10) NOT NULL,
+  durasi INTEGER NOT NULL,
+  total_harga INTEGER NOT NULL,
+  status TEXT CHECK(status IN ('pending', 'dikonfirmasi', 'selesai', 'dibatalkan')) NOT NULL DEFAULT 'pending',
+  status_pembayaran TEXT CHECK(status_pembayaran IN ('belum_bayar', 'sudah_bayar')) NOT NULL DEFAULT 'belum_bayar',
+  catatan TEXT DEFAULT '',
+  alasan_batal TEXT DEFAULT NULL,
+  whatsapp_sent BOOLEAN NOT NULL DEFAULT 0,
+  createdAt DATETIME NOT NULL,
+  updatedAt DATETIME NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (lapangan_id) REFERENCES lapangan(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- 4. Tabel SlotBlokir
+CREATE TABLE IF NOT EXISTS slot_blokir (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  lapangan_id INTEGER NOT NULL,
+  tanggal DATE NOT NULL,
+  jam_mulai VARCHAR(10) NOT NULL,
+  jam_selesai VARCHAR(10) NOT NULL,
+  alasan VARCHAR(255) DEFAULT 'Maintenance',
+  createdAt DATETIME NOT NULL,
+  updatedAt DATETIME NOT NULL,
+  FOREIGN KEY (lapangan_id) REFERENCES lapangan(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+==================================================================================

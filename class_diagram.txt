@@ -1,0 +1,292 @@
+3.2.1.3 Perancangan Class Diagram
+
+      Class diagram (diagram kelas) menggambarkan struktur sistem dari segi pendefinisian kelas-kelas yang akan dibuat untuk membangun sistem. Setiap kelas memiliki atribut (properti/data) dan method (fungsi/operasi) yang saling berhubungan satu sama lain melalui relasi tertentu. 
+
+      Dalam sistem penyewaan Lapangan Tenis Sukatani, perancangan class diagram terbagi menjadi kelas entitas utama (database model) serta kelas pengontrol (controllers & services) yang menangani logika bisnis sistem. Penjelasan kelas-kelas utama dalam sistem adalah sebagai berikut:
+
+1. Class User: Menyimpan informasi pengguna sistem, baik pelanggan (role: user) maupun pengelola (role: admin). Memiliki fungsi untuk autentikasi dan kelola profil.
+2. Class Lapangan: Menyimpan data arena/lapangan tenis beserta detail harga, fasilitas, foto, serta jam operasional.
+3. Class Booking: Menyimpan seluruh transaksi pemesanan lapangan oleh pelanggan, durasi, total biaya, status verifikasi, dan status pembayaran.
+4. Class SlotBlokir: Menyimpan data slot waktu atau tanggal tertentu pada lapangan yang diblokir oleh admin (misalnya untuk keperluan perawatan/maintenance atau turnamen).
+5. Class Controllers & Services: Merupakan kelas pengolah logika bisnis seperti AuthController, UserController, LapanganController, BookingController, JadwalController, ReportController, serta WhatsAppService untuk notifikasi.
+
+
+==================================================================================
+BAGIAN 1: RINCIAN STRUKTUR KELAS & METODE
+==================================================================================
+
+1. KELAS ENTITAS (DATABASE MODELS)
+----------------------------------------------------------------------------------
+a. Class: User
+   - Atribut:
+     + id : int (PK)
+     + nama : String
+     + email : String
+     + no_hp : String
+     + password : String
+     + role : Enum ('user', 'admin')
+     + is_active : boolean
+     + createdAt : DateTime
+     + updatedAt : DateTime
+   - Method / Fungsi:
+     + register() : boolean
+     + login() : String (JWT Token)
+     + updateProfile() : boolean
+     + changePassword() : boolean
+     + toggleStatus() : boolean
+
+b. Class: Lapangan
+   - Atribut:
+     + id : int (PK)
+     + nama : String
+     + harga_per_jam : int
+     + foto_url : String
+     + deskripsi : String
+     + fasilitas : String (JSON)
+     + status : Enum ('aktif', 'nonaktif')
+     + jam_buka : String
+     + jam_tutup : String
+     + createdAt : DateTime
+     + updatedAt : DateTime
+   - Method / Fungsi:
+     + getAvailableLapangan() : List<Lapangan>
+     + addLapangan() : boolean
+     + updateLapangan() : boolean
+     + deleteLapangan() : boolean
+
+c. Class: Booking
+   - Atribut:
+     + id : int (PK)
+     + user_id : int (FK)
+     + lapangan_id : int (FK)
+     + tanggal : Date
+     + jam_mulai : String
+     + jam_selesai : String
+     + durasi : int
+     + total_harga : int
+     + status : Enum ('pending', 'dikonfirmasi', 'selesai', 'dibatalkan')
+     + status_pembayaran : Enum ('belum_bayar', 'sudah_bayar')
+     + catatan : String
+     + alasan_batal : String
+     + whatsapp_sent : boolean
+     + createdAt : DateTime
+     + updatedAt : DateTime
+   - Method / Fungsi:
+     + createBooking() : Booking
+     + uploadPaymentProof() : boolean
+     + confirmBooking() : boolean
+     + cancelBooking() : boolean
+     + getHistoryByUser() : List<Booking>
+
+d. Class: SlotBlokir
+   - Atribut:
+     + id : int (PK)
+     + lapangan_id : int (FK)
+     + tanggal : Date
+     + jam_mulai : String
+     + jam_selesai : String
+     + alasan : String
+     + createdAt : DateTime
+     + updatedAt : DateTime
+   - Method / Fungsi:
+     + addBlokirSlot() : boolean
+     + deleteBlokirSlot() : boolean
+     + checkConflict() : boolean
+
+
+==================================================================================
+BAGIAN 2: KODE PLANTUML CLASS DIAGRAM
+==================================================================================
+
+----------------------------------------------------------------------------------
+GAMBAR 3.12 RANCANGAN CLASS DIAGRAM ENTITAS MODEL (GAMBAR UTAMA UNTUK LAPORAN)
+----------------------------------------------------------------------------------
+[Kode PlantUML Class Diagram - Entitas & Relasi Database]
+@startuml
+skinparam classAttributeIconSize 0
+
+class User {
+  - id : int
+  - nama : String
+  - email : String
+  - no_hp : String
+  - password : String
+  - role : String
+  - is_active : boolean
+  - createdAt : DateTime
+  - updatedAt : DateTime
+  + register() : boolean
+  + login() : String
+  + updateProfile() : boolean
+  + changePassword() : boolean
+}
+
+class Lapangan {
+  - id : int
+  - nama : String
+  - harga_per_jam : int
+  - foto_url : String
+  - deskripsi : String
+  - fasilitas : String
+  - status : String
+  - jam_buka : String
+  - jam_tutup : String
+  - createdAt : DateTime
+  - updatedAt : DateTime
+  + getAvailableLapangan() : List
+  + addLapangan() : boolean
+  + updateLapangan() : boolean
+  + deleteLapangan() : boolean
+}
+
+class Booking {
+  - id : int
+  - user_id : int
+  - lapangan_id : int
+  - tanggal : Date
+  - jam_mulai : String
+  - jam_selesai : String
+  - durasi : int
+  - total_harga : int
+  - status : String
+  - status_pembayaran : String
+  - catatan : String
+  - alasan_batal : String
+  - whatsapp_sent : boolean
+  - createdAt : DateTime
+  - updatedAt : DateTime
+  + createBooking() : Booking
+  + uploadPaymentProof() : boolean
+  + confirmBooking() : boolean
+  + cancelBooking() : boolean
+}
+
+class SlotBlokir {
+  - id : int
+  - lapangan_id : int
+  - tanggal : Date
+  - jam_mulai : String
+  - jam_selesai : String
+  - alasan : String
+  - createdAt : DateTime
+  - updatedAt : DateTime
+  + addBlokirSlot() : boolean
+  + deleteBlokirSlot() : boolean
+}
+
+' Relasi Antar Class (Multiplicity)
+User "1" -- "0..*" Booking : melakukan >
+Lapangan "1" -- "0..*" Booking : dipesan pada >
+Lapangan "1" -- "0..*" SlotBlokir : diblokir oleh >
+
+@enduml
+
+
+----------------------------------------------------------------------------------
+GAMBAR 3.13 RANCANGAN CLASS DIAGRAM ARSITEKTUR LENGKAP (MVC / CONTROLLER & SERVICE)
+----------------------------------------------------------------------------------
+[Kode PlantUML Class Diagram - Arsitektur Lengkap System]
+@startuml
+skinparam classAttributeIconSize 0
+
+package "Models" {
+  class User {
+    - id : int
+    - nama : String
+    - email : String
+    - password : String
+    - role : String
+  }
+
+  class Lapangan {
+    - id : int
+    - nama : String
+    - harga_per_jam : int
+    - status : String
+  }
+
+  class Booking {
+    - id : int
+    - user_id : int
+    - lapangan_id : int
+    - status : String
+    - status_pembayaran : String
+  }
+
+  class SlotBlokir {
+    - id : int
+    - lapangan_id : int
+    - tanggal : Date
+  }
+}
+
+package "Controllers" {
+  class AuthController {
+    + register(req, res)
+    + login(req, res)
+    + getProfile(req, res)
+  }
+
+  class UserController {
+    + getAllUsers(req, res)
+    + toggleUserStatus(req, res)
+    + deleteUser(req, res)
+  }
+
+  class LapanganController {
+    + getAllLapangan(req, res)
+    + getLapanganById(req, res)
+    + createLapangan(req, res)
+    + updateLapangan(req, res)
+    + deleteLapangan(req, res)
+  }
+
+  class BookingController {
+    + createBooking(req, res)
+    + getUserBookings(req, res)
+    + getAllBookings(req, res)
+    + confirmPayment(req, res)
+    + cancelBooking(req, res)
+  }
+
+  class JadwalController {
+    + getJadwalByTanggal(req, res)
+    + createSlotBlokir(req, res)
+    + deleteSlotBlokir(req, res)
+  }
+
+  class ReportController {
+    + getMonthlyReport(req, res)
+    + exportReportPDF(req, res)
+  }
+}
+
+package "Services & Middleware" {
+  class AuthMiddleware {
+    + verifyToken(req, res, next)
+    + checkAdmin(req, res, next)
+  }
+
+  class WhatsAppService {
+    + sendBookingConfirmation(phone, bookingData)
+    + sendStatusUpdateNotification(phone, status)
+  }
+}
+
+' Relasi Antar Package & Layer
+AuthController ..> User : menggunakan
+UserController ..> User : mengelola
+LapanganController ..> Lapangan : mengelola
+JadwalController ..> SlotBlokir : mengelola
+JadwalController ..> Lapangan : membaca
+BookingController ..> Booking : mengelola
+BookingController ..> Lapangan : membaca
+BookingController ..> User : membaca
+BookingController ..> WhatsAppService : memanggil
+ReportController ..> Booking : membaca data
+
+User "1" -- "0..*" Booking
+Lapangan "1" -- "0..*" Booking
+Lapangan "1" -- "0..*" SlotBlokir
+
+@enduml

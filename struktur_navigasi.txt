@@ -1,0 +1,313 @@
+==================================================================================
+           PERANCANGAN STRUKTUR NAVIGASI WEBSITE LAPANGAN TENIS SUKATANI
+==================================================================================
+Nama Proyek     : Sistem Penyewaan / Booking Lapangan Tenis Sukatani
+Teknologi       : React.js (Frontend) + Express.js Sequelize (Backend)
+Jenis Dokumen   : Perancangan Struktur Navigasi & Alur Penggunaan (Navigation Flow)
+File Dokumen    : struktur_navigasi.txt
+==================================================================================
+
+----------------------------------------------------------------------------------
+1. PENJELASAN UMUM & PETA RUTE SISTEM (SYSTEM ROUTING MAP)
+----------------------------------------------------------------------------------
+Struktur navigasi website Sistem Penyewaan Lapangan Tenis Sukatani dirancang dengan
+arsitektur **Navigasi Hirarki Komposisi (Hybrid Navigation Architecture)** 3 tingkat:
+- **Level 1 (Akses Utama)** : Halaman Login & Halaman Publik/Landing Page.
+- **Level 2 (Menu Utama)**  : Menu Navigasi Utama pada Navbar/Sidebar.
+- **Level 3 (Sub-Menu/Aksi)**: Modal Form, Aksi CRUD, Validasi, & Filter Data.
+
+Setiap komponen menu dihubungkan menggunakan **panah dua arah (bidirectional arrow <--->)**
+yang menggambarkan bahwa pengguna dapat berpindah antar-halaman utama dan fitur aksi
+secara dinamis tanpa kehilangan konteks sesi pengguna.
+
+Mapping Rute URL Website:
++-------------------+--------------------+---------------------------------------+
+| Modul / Peran     | Route Path         | Komponen Halaman / Fitur              |
++-------------------+--------------------+---------------------------------------+
+| Publik / Guest    | /                  | InformasiPage (Landing & Info Kontak) |
+| Publik / Guest    | /informasi         | InformasiPage (Fasilitas & Jam Buka)  |
+| Autentikasi       | /login             | LoginPage (Login User & Admin)        |
+| Autentikasi       | /register          | RegisterPage (Pendaftaran User Baru)  |
+| Pelanggan (User)  | /dashboard         | UserDashboard (Panduan & Alur)        |
+| Pelanggan (User)  | /lapangan          | LapanganList (Katalog Arena Tenis)    |
+| Pelanggan (User)  | /booking           | BookingPage (Form Sewa & Jam)         |
+| Pelanggan (User)  | /riwayat           | RiwayatBooking (Bukti Bayar & Status) |
+| Admin (Pengelola) | /admin             | AdminDashboard (Ringkasan Statistik)  |
+| Admin (Pengelola) | /admin/pemesanan   | KelolaPemesanan (Validasi & Status)   |
+| Admin (Pengelola) | /admin/lapangan    | KelolaLapangan (Master Data Lapangan) |
+| Admin (Pengelola) | /admin/jadwal      | KelolaJadwal (Blokir Maintenance)     |
+| Admin (Pengelola) | /admin/users       | KelolaUser (Manajemen Akun Pelanggan) |
+| Admin (Pengelola) | /admin/laporan     | LaporanPage (Rekapitulasi & Cetak PDF)|
++-------------------+--------------------+---------------------------------------+
+
+
+----------------------------------------------------------------------------------
+2. RANCANGAN STRUKTUR NAVIGASI ADMIN (Gambar 3.14)
+----------------------------------------------------------------------------------
+
+                                  +----------+
+                                  |  Login   |
+                                  | (/login) |
+                                  +----+-----+
+                                       |
+                                       v
+  +-----------+-----------+------------+------------+-----------+-----------+
+  |           |           |                         |           |           |
+  <--->       <--->       <--->                     <--->       <--->       <--->
+  |           |           |                         |           |           |
++-+-------+ +-+-------+ +-+-------+               +-+-------+ +-+-------+ +-+-------+
+|Dashboard| |Pemesanan| | Kelola  |               | Kelola  | | Kelola  | | Laporan | | Keluar  |
+|  Admin  | | (Booking| |Lapangan |               | Jadwal  | |  User   | |Transaksi| | (Logout)|
+|(/admin) | |/pemesa- | |/lapangan|               | /jadwal | | /users  | |/laporan | |         |
+|         | |   nan)  | |         |               |         | |         | |         | |         |
++---------+ +----+----+ +----+----+               +----+----+ +----+----+ +----+----+ +---------+
+                 |           |                         |           |           |
+                 <--->       <--->                     <--->       <--->       <--->
+                 |           |                         |           |           |
+   +-------------+---+   +---+-------+             +---+---+   +---+---+   +---+---+
+   |     |     |     |   |     |     |             |       |   |       |   |       |
+   <->   <->   <->   <-> <->   <->   <->           <->     <-> <->     <-> <->     <->
+   |     |     |     |   |     |     |             |       |   |       |   |       |
+ +-+--+ +-+--+ +-+--+ +-+--+ +-+--+ +-+--+ +-+--+  +-+---+ +-+---+ +-+---+ +-+---+ +-+---+ +-+---+
+
+PENJELASAN STRUKTUR NAVIGASI ADMIN (Gambar 3.14):
+      Struktur Navigasi Admin Gambar 3.14 terdapat susunan menu dan halaman yang dirancang untuk memudahkan pengelola dalam mengontrol dan mengoperasikan sistem. Di dalamnya, admin terlebih dahulu harus melakukan login untuk dapat masuk ke panel dashboard utama. Admin yang sudah melakukan login bisa mengakses menu dashboard admin, kelola pemesanan, kelola lapangan, kelola jadwal, kelola user, dan laporan transaksi. Pada menu kelola pemesanan admin dapat melihat detail pesanan, memvalidasi bukti pembayaran, serta mengonfirmasi atau membatalkan pesanan. Pada menu kelola lapangan admin dapat menambah lapangan, mengedit data lapangan, dan menghapus lapangan. Pada menu kelola jadwal admin dapat menambah slot blokir dan menghapus slot blokir untuk perawatan lapangan. Pada menu kelola user admin dapat mengubah status keaktifan user dan menghapus akun user. Pada menu laporan transaksi admin dapat memilih filter periode bulan dan mencetak laporan pendapatan.
+
+
+----------------------------------------------------------------------------------
+3. RANCANGAN STRUKTUR NAVIGASI PELANGGAN (Gambar 3.15)
+----------------------------------------------------------------------------------
+
+                                  +----------+
+                                  | Halaman  |
+                                  | Utama /  |
+                                  |  Login   |
+                                  |(/ & /log-|
+                                  |   in)    |
+                                  +----+-----+
+                                       |
+                                       v
+  +-----------+-----------+------------+------------+-----------+-----------+
+  |           |           |                         |           |           |
+  <--->       <--->       <--->                     <--->       <--->       <--->
+  |           |           |                         |           |           |
++-+-------+ +-+-------+ +-+-------+               +-+-------+ +-+-------+ +-+-------+
+|Dashboard| | Daftar  | | Form    |               | Riwayat | |Informasi| | Keluar  |
+|Pelanggan| |Lapangan | |Booking  |               | Booking | | Kontak  | | (Logout)|
+|(/dashbo-| |(/lapan- | |(/book-  |               |(/riwa-  | |(/infor- | |         |
+|   ard)  | |   gan)  | |   ing)  |               |   yat)  | |  masi)  | |         |
++---------+ +----+----+ +----+----+               +----+----+ +---------+ +---------+
+
+PENJELASAN STRUKTUR NAVIGASI PELANGGAN (Gambar 3.15):
+      Struktur Navigasi Pelanggan Gambar 3.15 terdapat susunan menu dan halaman yang dibuat untuk memudahkan pelanggan saat menggunakan sistem. Di dalamnya, pelanggan ketika belum login bisa mengakses beranda (informasi) dan daftar lapangan. Kalau melakukan pemesanan lapangan dengan mengklik booking sekarang harus login terlebih dahulu dan pengunggahan bukti pembayaran juga harus login terlebih dahulu. Pelanggan yang sudah melakukan login bisa mengakses dashboard pelanggan, daftar lapangan, form booking, riwayat booking, dan informasi kontak. Pada bagian daftar lapangan menampilkan detail lapangan dan direct booking. Bagian form booking menampilkan pilihan jadwal dan jam main serta konfirmasi booking. Bagian riwayat booking menampilkan detail booking ticket, upload bukti bayar, dan fitur kirim WhatsApp ke admin.
+
+
+----------------------------------------------------------------------------------
+4. ALUR PROSES PENGGUNAAN SISTEM SECARA DETIL (SCENARIO FLOW)
+----------------------------------------------------------------------------------
+
+A. ALUR SCENARIO PELANGGAN (CUSTOMER USER JOURNEY):
+1. **Pengaksesan Halaman Utama**: Pelanggan membuka URL website (`/`). Sistem menampilkan halaman `InformasiPage` berisi profil Sukatani Tenis.
+2. **Registrasi / Login**:
+   - Jika belum memiliki akun, pelanggan mengklik menu **Daftar** (`/register`) dan mengisi Nama, Email, No HP, serta Password.
+   - Pelanggan melakukan login pada halaman `/login`. Sesi JWT token disimpan dan pelanggan diarahkan ke `/dashboard`.
+3. **Eksplorasi Lapangan**:
+   - Pelanggan membuka menu **Lapangan** (`/lapangan`) untuk melihat katalog.
+   - Pelanggan mengklik tombol **Detail** untuk melihat foto dan fasilitas.
+   - Pelanggan mengklik **Pesan Sekarang**, lalu sistem mengarahkannya ke `/booking?lapanganId=X`.
+4. **Pengisian Form Booking**:
+   - Di halaman `/booking`, pelanggan memilih tanggal sewa, jam mulai (misal: 08:00), dan jam selesai (misal: 10:00).
+   - Sistem secara otomatis memvalidasi jadwal agar tidak bentrok dengan booking pelanggan lain atau slot yang diblokir admin.
+   - Sistem menghitung total tagihan (Durasi x Harga per jam).
+   - Pelanggan menekan tombol **Buat Pesanan**.
+5. **Pembayaran & Upload Resi Transfer**:
+   - Pelanggan otomatis dialihkan ke halaman **Riwayat Booking** (`/riwayat`). Status transaksi adalah `Pending` dan status pembayaran `Belum Bayar`.
+   - Pelanggan melakukan transfer ke rekening pengelola Sukatani Tenis.
+   - Pelanggan mengklik tombol **Upload Bukti Bayar**, memilih file resi, dan menekan **Simpan**.
+   - Pelanggan juga dapat mengklik tombol **Konfirmasi via WhatsApp** untuk mengirim pesan otomatis ke admin.
+
+B. ALUR SCENARIO ADMIN (ADMIN OPERATIONAL FLOW):
+1. **Autentikasi Admin**: Admin mengakses `/login`, menginputkan email & password akun admin. Sistem mengenali role `admin` dan mengarahkannya ke halaman `/admin`.
+2. **Pemantauan Dashboard**: Admin melihat statistik pada `/admin` (misal: Pesanan Hari Ini, Total Pendapatan, dan Jumlah User).
+3. **Validasi & Konfirmasi Pesanan**:
+   - Admin membuka menu **Pemesanan** (`/admin/pemesanan`).
+   - Admin melihat daftar transaksi dengan badge status `Pending`.
+   - Admin mengklik ikon **Bukti Bayar** untuk memeriksa foto resi transfer pelanggan.
+   - Apabila dana sudah masuk, Admin mengklik tombol **Konfirmasi**. Status transaksi berubah menjadi `Dikonfirmasi` dan status pembayaran menjadi `Sudah Bayar`.
+4. **Manajemen Jadwal (Slot Blokir)**:
+   - Jika ada perawatan lapangan atau turnamen internal, Admin membuka menu **Kelola Jadwal** (`/admin/jadwal`).
+   - Admin mengklik **Tambah Slot Blokir**, memilih lapangan, tanggal, jam mulai, jam selesai, serta mengisi alasan (contoh: "Perbaikan Net & Garis").
+   - Setelah disimpan, slot jam tersebut tidak akan bisa dipilih oleh pelanggan pada halaman `/booking`.
+5. **Kelola Lapangan & User**:
+   - Admin dapat menambah atau mengubah tarif lapangan pada menu **Kelola Lapangan** (`/admin/lapangan`).
+   - Admin dapat mengaktifkan/menonaktifkan akun user pada menu **Kelola User** (`/admin/users`).
+6. **Pencetakan Laporan Periodik**:
+   - Pada akhir bulan, Admin membuka menu **Laporan** (`/admin/laporan`).
+   - Admin memilih bulan dan tahun, lalu menekan tombol **Cetak Laporan** untuk mengunduh rekapitulasi data pendapatan dalam bentuk PDF / Print.
+
+
+----------------------------------------------------------------------------------
+5. DIAGRAM PLANTUML STRUKTUR NAVIGASI AKURAT (SISTEM REAL)
+----------------------------------------------------------------------------------
+
+--- PlantUML Script Struktur Navigasi Admin ---
+@startuml
+skinparam monochrome true
+skinparam packageStyle rect
+
+package "Rancangan Struktur Navigasi Admin Sukatani Tenis" {
+  [Login Admin (/login)] --> [Dashboard Admin (/admin)]
+  [Login Admin (/login)] <--> [Pemesanan (/admin/pemesanan)]
+  [Login Admin (/login)] <--> [Kelola Lapangan (/admin/lapangan)]
+  [Login Admin (/login)] <--> [Kelola Jadwal (/admin/jadwal)]
+  [Login Admin (/login)] <--> [Kelola User (/admin/users)]
+  [Login Admin (/login)] <--> [Laporan Transaksi (/admin/laporan)]
+  [Login Admin (/login)] --> [Keluar (Logout)]
+
+  [Pemesanan (/admin/pemesanan)] <--> [Detail Pesanan]
+  [Pemesanan (/admin/pemesanan)] <--> [Validasi Pembayaran]
+  [Pemesanan (/admin/pemesanan)] <--> [Konfirmasi Pesanan]
+  [Pemesanan (/admin/pemesanan)] <--> [Batalkan Pesanan]
+
+  [Kelola Lapangan (/admin/lapangan)] <--> [Tambah Lapangan]
+  [Kelola Lapangan (/admin/lapangan)] <--> [Edit Lapangan]
+  [Kelola Lapangan (/admin/lapangan)] <--> [Hapus Lapangan]
+
+  [Kelola Jadwal (/admin/jadwal)] <--> [Tambah Slot Blokir]
+  [Kelola Jadwal (/admin/jadwal)] <--> [Hapus Slot Blokir]
+
+  [Kelola User (/admin/users)] <--> [Status User (Aktif/Blokir)]
+  [Kelola User (/admin/users)] <--> [Hapus User]
+
+  [Laporan Transaksi (/admin/laporan)] <--> [Filter Periode Bulan]
+  [Laporan Transaksi (/admin/laporan)] <--> [Cetak Laporan (PDF/Print)]
+}
+@enduml
+
+--- PlantUML Script Struktur Navigasi Pelanggan ---
+@startuml
+skinparam monochrome true
+skinparam packageStyle rect
+
+package "Rancangan Struktur Navigasi Pelanggan Sukatani Tenis" {
+  [Halaman Utama / Login (/ & /login)] --> [Dashboard Pelanggan (/dashboard)]
+  [Halaman Utama / Login (/ & /login)] <--> [Daftar Lapangan (/lapangan)]
+  [Halaman Utama / Login (/ & /login)] <--> [Form Booking (/booking)]
+  [Halaman Utama / Login (/ & /login)] <--> [Riwayat Booking (/riwayat)]
+  [Halaman Utama / Login (/ & /login)] <--> [Informasi Kontak (/informasi)]
+  [Halaman Utama / Login (/ & /login)] --> [Keluar (Logout)]
+
+  [Daftar Lapangan (/lapangan)] <--> [Detail Lapangan]
+  [Daftar Lapangan (/lapangan)] <--> [Direct Booking]
+
+  [Form Booking (/booking)] <--> [Pilih Jadwal & Jam]
+  [Form Booking (/booking)] <--> [Konfirmasi Booking]
+
+  [Riwayat Booking (/riwayat)] <--> [Detail Booking Ticket]
+  [Riwayat Booking (/riwayat)] <--> [Upload Bukti Bayar]
+  [Riwayat Booking (/riwayat)] <--> [Kirim WhatsApp]
+}
+@enduml
+
+
+----------------------------------------------------------------------------------
+6. KODE MERMAID DOKUMEN (LANGSUNG COPY-PASTE KE DRAW.IO)
+----------------------------------------------------------------------------------
+
+--- Mermaid Script Admin (Gambar 3.14) ---
+```mermaid
+graph TD
+    Login["Login Admin<br/>(/login)"]
+    Dashboard["Dashboard Admin<br/>(/admin)"]
+    Pemesanan["Kelola Pemesanan<br/>(/admin/pemesanan)"]
+    Lapangan["Kelola Lapangan<br/>(/admin/lapangan)"]
+    Jadwal["Kelola Jadwal<br/>(/admin/jadwal)"]
+    Users["Kelola User<br/>(/admin/users)"]
+    Laporan["Laporan Transaksi<br/>(/admin/laporan)"]
+    Logout["Keluar<br/>(Logout)"]
+
+    DetailP["Detail Pesanan"]
+    ValBayar["Validasi Pembayaran"]
+    KonfirmP["Konfirmasi Pesanan"]
+    BatalP["Batalkan Pesanan"]
+
+    TambahL["Tambah Lapangan"]
+    EditL["Edit Lapangan"]
+    HapusL["Hapus Lapangan"]
+
+    TambahJ["Tambah Slot Blokir"]
+    HapusJ["Hapus Slot Blokir"]
+
+    StatusU["Status User (Aktif/Blokir)"]
+    HapusU["Hapus User"]
+
+    FilterL["Filter Periode Bulan"]
+    CetakL["Cetak Laporan (PDF/Print)"]
+
+    Login --> Dashboard
+    Login <--> Pemesanan
+    Login <--> Lapangan
+    Login <--> Jadwal
+    Login <--> Users
+    Login <--> Laporan
+    Login --> Logout
+
+    Pemesanan <--> DetailP
+    Pemesanan <--> ValBayar
+    Pemesanan <--> KonfirmP
+    Pemesanan <--> BatalP
+
+    Lapangan <--> TambahL
+    Lapangan <--> EditL
+    Lapangan <--> HapusL
+
+    Jadwal <--> TambahJ
+    Jadwal <--> HapusJ
+
+    Users <--> StatusU
+    Users <--> HapusU
+
+    Laporan <--> FilterL
+    Laporan <--> CetakL
+```
+
+--- Mermaid Script Pelanggan (Gambar 3.15) ---
+```mermaid
+graph TD
+    Home["Halaman Utama / Login<br/>(/ & /login)"]
+    Dashboard["Dashboard Pelanggan<br/>(/dashboard)"]
+    Lapangan["Daftar Lapangan<br/>(/lapangan)"]
+    Booking["Form Booking<br/>(/booking)"]
+    Riwayat["Riwayat Booking<br/>(/riwayat)"]
+    Informasi["Informasi Kontak<br/>(/informasi)"]
+    Logout["Keluar<br/>(Logout)"]
+
+    DetailL["Detail Lapangan"]
+    DirectB["Direct Booking"]
+
+    PilihJ["Pilih Jadwal & Jam"]
+    KonfirmB["Konfirmasi Booking"]
+
+    DetailR["Detail Booking Ticket"]
+    UploadB["Upload Bukti Bayar"]
+    WAAlert["Kirim WhatsApp Alert"]
+
+    Home --> Dashboard
+    Home <--> Lapangan
+    Home <--> Booking
+    Home <--> Riwayat
+    Home <--> Informasi
+    Home --> Logout
+
+    Lapangan <--> DetailL
+    Lapangan <--> DirectB
+
+    Booking <--> PilihJ
+    Booking <--> KonfirmB
+
+    Riwayat <--> DetailR
+    Riwayat <--> UploadB
+    Riwayat <--> WAAlert
+```
+
+==================================================================================

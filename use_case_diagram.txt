@@ -1,0 +1,86 @@
+3.2.1.1 Perancangan Use Case Diagram
+
+      Dalam use case diagram ini terdapat 2 aktor yaitu pelanggan dan admin. Pelanggan terdapat include registrasi akun, melakukan login, melihat informasi alur booking, melihat daftar lapangan, melakukan booking lapangan, mengunggah bukti pembayaran, serta melihat riwayat booking. Use case diagram pelanggan dapat dilihat pada Gambar 3.1. Admin dapat melakukan login admin, melihat dashboard statistik, mengelola pemesanan terdapat include memvalidasi bukti pembayaran dan konfirmasi pesanan. Kemudian include kelola lapangan, kelola jadwal, kelola pengguna, serta melihat dan mencetak laporan transaksi. Use case diagram admin dapat dilihat pada Gambar 3.2.
+
+
+==================================================================================
+BAGIAN 1: USE CASE DIAGRAM - PELANGGAN (Gambar 3.1)
+==================================================================================
+
+Aktor: Pelanggan
+Deskripsi: Pengguna umum yang ingin menyewa/memesan lapangan tenis.
+
+Daftar Use Case (Aktivitas):
+1. Registrasi Akun: Pelanggan membuat akun baru untuk dapat masuk ke sistem.
+2. Login: Pelanggan masuk ke sistem menggunakan email/username dan password.
+3. Melihat Informasi & Lapangan: Pelanggan dapat melihat alur booking, informasi kontak, jadwal buka, dan daftar lapangan (beserta harga dan fasilitas).
+4. Melakukan Booking Lapangan: Pelanggan memilih tanggal, waktu, dan lapangan yang ingin disewa, kemudian melakukan pemesanan.
+5. Mengunggah Bukti Pembayaran: Pelanggan mengirimkan bukti transfer/pembayaran untuk booking yang sudah dibuat agar diverifikasi admin.
+6. Melihat Riwayat Booking: Pelanggan melihat daftar transaksi yang telah dibuat beserta statusnya (menunggu, lunas/berhasil, atau dibatalkan).
+
+----------------------------------------------------------------------------------
+KODE DIAGRAM PELANGGAN (PlantUML - Gambar 3.1)
+----------------------------------------------------------------------------------
+@startuml
+left to right direction
+actor "Pelanggan" as pelanggan
+
+package "Sistem Booking - Modul Pelanggan" {
+  usecase "Registrasi Akun" as UC1
+  usecase "Login" as UC2
+  usecase "Melihat Informasi & Daftar Lapangan" as UC3
+  usecase "Melakukan Booking Lapangan" as UC4
+  usecase "Mengunggah Bukti Pembayaran" as UC5
+  usecase "Melihat Riwayat Booking" as UC6
+}
+
+pelanggan --> UC1
+pelanggan --> UC2
+pelanggan --> UC3
+pelanggan --> UC4
+pelanggan --> UC5
+pelanggan --> UC6
+@enduml
+
+
+==================================================================================
+BAGIAN 2: USE CASE DIAGRAM - ADMIN (Gambar 3.2)
+==================================================================================
+
+Aktor: Admin
+Deskripsi: Pengelola penyewaan lapangan tenis dan pengelola sistem (backend).
+
+Daftar Use Case (Aktivitas):
+1. Login: Admin masuk ke sistem (halaman dashboard) menggunakan kredensial khusus.
+2. Melihat Dashboard Statistik: Admin memantau jumlah pesanan, total pendapatan, dan jumlah pelanggan yang terdaftar.
+3. Mengelola Pemesanan: Admin melihat daftar transaksi, memvalidasi bukti pembayaran pelanggan, dan menyetujui/mengonfirmasi pesanan.
+4. Mengelola Lapangan: Admin dapat menambah daftar lapangan baru, mengedit harga/fasilitas, dan menghapus data lapangan.
+5. Mengelola Jadwal: Admin dapat memblokir hari/jam tertentu (misalnya ada perbaikan atau turnamen) agar tidak bisa dipesan pelanggan.
+6. Mengelola Pengguna: Admin dapat melihat daftar pelanggan, serta memblokir atau menghapus akun pelanggan yang bermasalah.
+7. Melihat & Cetak Laporan: Admin melihat rekapitulasi data pendapatan dan transaksi per bulan, serta mencetak laporannya.
+
+----------------------------------------------------------------------------------
+KODE DIAGRAM ADMIN (PlantUML - Gambar 3.2)
+----------------------------------------------------------------------------------
+@startuml
+left to right direction
+actor "Admin" as admin
+
+package "Sistem Booking - Modul Admin" {
+  usecase "Login Admin" as UC1
+  usecase "Melihat Dashboard Statistik" as UC2
+  usecase "Mengelola Data Pemesanan" as UC3
+  usecase "Mengelola Data Lapangan" as UC4
+  usecase "Mengelola Jadwal Lapangan" as UC5
+  usecase "Mengelola Akun Pengguna" as UC6
+  usecase "Melihat/Mencetak Laporan" as UC7
+}
+
+admin --> UC1
+admin --> UC2
+admin --> UC3
+admin --> UC4
+admin --> UC5
+admin --> UC6
+admin --> UC7
+@enduml

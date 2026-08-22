@@ -1,0 +1,37 @@
+==================================================================================
+        PERANCANGAN TAMPILAN HALAMAN LOGIN PELANGGAN (USER LOGIN PAGE)
+==================================================================================
+Nama Proyek     : Sistem Penyewaan / Booking Lapangan Tenis Sukatani
+Jenis Dokumen   : Deskripsi Perancangan Tampilan (UI Layout Description)
+File Dokumen    : perancangan_tampilan_login.txt
+==================================================================================
+
+Perancangan tampilan halaman website untuk pelanggan sebagai berikut:
+
+1. Perancangan Tampilan Pada Halaman Login Pelanggan
+
+      Tampilan pada halaman Login Pelanggan dirancang terdapat text, text form field, button, dan text button. Text digunakan sebagai informasi judul dan panduan untuk pelanggan, text form field digunakan sebagai tempat untuk memasukkan email dan password pelanggan, satu button dengan text "Masuk" digunakan untuk pelanggan yang sudah memasukkan email dan password agar dapat masuk ke dalam website, serta text button dengan text "Daftar sekarang" digunakan sebagai navigasi untuk menuju ke halaman Register. Rancangan halaman Login Pelanggan dapat dilihat pada Gambar 3.16.
+
+
+----------------------------------------------------------------------------------
+LAMPIRAN WIREFRAME VISUAL HALAMAN LOGIN PELANGGAN (Gambar 3.16)
+----------------------------------------------------------------------------------
+
++--------------------------------------------------------------------------------+
+|                                                                                |
+|                        +------------------------------+                        |
+|                        |          🎾 TenisBook        |                        |
+|                        |     Masuk ke akun Anda       |                        |
+|                        +------------------------------+                        |
+|                        | Email*    : [contoh@email.com] |                        |
+|                        | Password* : [••••••••        ] |                        |
+|                        |                              |                        |
+|                        |         [ 🚀 Masuk ]         |                        |
+|                        |                              |                        |
+|                        | Belum punya akun?            |                        |
+|                        | [ Daftar sekarang ]          |                        |
+|                        +------------------------------+                        |
+|                                                                                |
++--------------------------------------------------------------------------------+
+
+==================================================================================
