@@ -8,6 +8,20 @@ import Modal from '../../components/ui/Modal';
 
 const STATUS_OPTIONS = ['semua', 'pending', 'dikonfirmasi', 'selesai', 'dibatalkan'];
 
+const waMessage = (b) => {
+  const tgl = new Date(b.tanggal).toLocaleDateString('id-ID');
+  const base = `Halo ${b.user?.nama}, terkait booking Lapangan Tenis Anda`;
+  const statusText = {
+    dikonfirmasi: 'SUDAH DIKONFIRMASI',
+    pending: 'MENUNGGU KONFIRMASI',
+    selesai: 'TELAH SELESAI',
+    dibatalkan: 'DIBATALKAN',
+  }[b.status];
+  return statusText
+    ? `${base} ${statusText} pada ${tgl} jam ${b.jam_mulai}`
+    : `${base} pada ${tgl} jam ${b.jam_mulai}`;
+};
+
 export default function KelolaPemesanan() {
   const [searchParams] = useSearchParams();
   const [bookings, setBookings] = useState([]);
@@ -141,7 +155,7 @@ export default function KelolaPemesanan() {
                     <td>
                       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                         <a 
-                          href={`https://wa.me/62${b.user?.no_hp?.replace(/^0/, '')}?text=${encodeURIComponent(`Halo ${b.user?.nama}, terkait booking Lapangan Tenis Anda pada ${new Date(b.tanggal).toLocaleDateString('id-ID')} jam ${b.jam_mulai}: `)}`}
+                          href={`https://wa.me/62${b.user?.no_hp?.replace(/^0/, '')}?text=${encodeURIComponent(waMessage(b))}`}
                           target="_blank" rel="noreferrer"
                           className="btn btn-secondary btn-sm"
                           style={{ borderColor: 'rgba(52,211,153,0.5)', color: '#34d399' }}
