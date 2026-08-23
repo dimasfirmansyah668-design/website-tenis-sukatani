@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import api from '../../api/axios';
 import { formatRupiah, getStatusLabel } from '../../utils/helpers';
+import { exportTransaksiExcel } from '../../utils/exportExcel';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import PageHeader from '../../components/ui/PageHeader';
 import DataTable from '../../components/ui/DataTable';
@@ -8,6 +10,7 @@ import DataTable from '../../components/ui/DataTable';
 export default function LaporanPage() {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
   
   const today = new Date();
   const [bulan, setBulan] = useState(String(today.getMonth() + 1).padStart(2, '0'));
@@ -27,6 +30,20 @@ export default function LaporanPage() {
     };
     fetchReport();
   }, [bulan, tahun]);
+
+  const handleExport = async () => {
+    if (!report) return;
+    setExporting(true);
+    try {
+      await exportTransaksiExcel(report);
+      toast.success('File Excel berhasil diunduh');
+    } catch (err) {
+      console.error(err);
+      toast.error('Gagal membuat file Excel');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   return (
     <div className="animate-fade">
@@ -79,7 +96,9 @@ export default function LaporanPage() {
 
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-base font-bold text-slate-800">Rincian Transaksi ({report.bulan})</h3>
-            <button className="btn btn-secondary btn-sm" onClick={() => window.print()}>Cetak</button>
+            <button className="btn btn-secondary btn-sm" onClick={handleExport} disabled={exporting}>
+              {exporting ? 'Menyiapkan…' : 'Cetak Excel'}
+            </button>
           </div>
           <DataTable
             columns={[
