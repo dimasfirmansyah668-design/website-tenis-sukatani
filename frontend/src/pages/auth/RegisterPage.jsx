@@ -90,6 +90,12 @@ export default function RegisterPage() {
             Masuk di sini
           </Link>
         </p>
+
+        <p style={{ textAlign: 'center', fontSize: '0.875rem', marginTop: '10px' }}>
+          <Link to="/" style={{ color: 'var(--text-muted)' }}>
+            &larr; Kembali ke Beranda
+          </Link>
+        </p>
       </div>
     </div>
   );
