@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { formatRupiah, getStatusColor, getStatusLabel, getPembayaranLabel, canCancelBooking } from '../../utils/helpers';
-import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import PageHeader from '../../components/ui/PageHeader';
 import Modal from '../../components/ui/Modal';
-
-import { useNavigate } from 'react-router-dom';
+import DataTable from '../../components/ui/DataTable';
 
 const STATUS_FILTERS = ['semua', 'pending', 'dikonfirmasi', 'selesai', 'dibatalkan'];
 
@@ -15,10 +15,10 @@ export default function RiwayatBooking() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('semua');
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [total, setTotal] = useState(0);
   const [cancelModal, setCancelModal] = useState(null);
   const [cancelling, setCancelling] = useState(false);
-  const limit = 8;
 
   const fetchBookings = useCallback(async () => {
     setLoading(true);
@@ -28,7 +28,7 @@ export default function RiwayatBooking() {
       const { data } = await api.get(`/booking/my?${params}`);
       setBookings(data.bookings || []);
       setTotal(data.total || 0);
-    } catch (err) {
+    } catch {
       toast.error('Gagal memuat riwayat booking.');
     } finally {
       setLoading(false);
@@ -53,17 +53,80 @@ export default function RiwayatBooking() {
     }
   };
 
-  const totalPages = Math.ceil(total / limit);
+  const columns = [
+    {
+      key: 'id',
+      header: 'ID',
+      thClassName: 'w-20',
+      render: (b) => (
+        <div>
+          <span className="font-semibold text-slate-700">#{b.id}</span>
+          <div className="text-[11px] text-slate-400">Dibuat {new Date(b.createdAt).toLocaleDateString('id-ID')}</div>
+        </div>
+      ),
+    },
+    {
+      key: 'tanggal',
+      header: 'Tanggal & Jam',
+      render: (b) => (
+        <div>
+          <div className="font-medium capitalize">{new Date(b.tanggal).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}</div>
+          <div className="text-xs text-slate-500">{b.jam_mulai} – {b.jam_selesai} ({b.durasi} jam)</div>
+        </div>
+      ),
+    },
+    {
+      key: 'lapangan',
+      header: 'Lapangan',
+      render: (b) => (
+        <div className="max-w-[200px]">
+          <div className="font-medium">{b.lapangan?.nama || '—'}</div>
+          {b.catatan && <div className="mt-0.5 line-clamp-2 text-xs text-slate-400" title={b.catatan}>Catatan: {b.catatan}</div>}
+          {b.alasan_batal && <div className="mt-0.5 line-clamp-2 text-xs text-red-400" title={b.alasan_batal}>Alasan: {b.alasan_batal}</div>}
+        </div>
+      ),
+    },
+    {
+      key: 'total_harga',
+      header: 'Total',
+      render: (b) => <span className="font-bold text-primary-600">{formatRupiah(b.total_harga)}</span>,
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      render: (b) => (
+        <div className="flex flex-wrap gap-1">
+          <span className={`badge ${getStatusColor(b.status)} !text-[11px]`}>{getStatusLabel(b.status)}</span>
+          <span className={`badge ${b.status_pembayaran === 'sudah_bayar' ? 'badge-success' : 'badge-default'} !text-[11px]`}>
+            {getPembayaranLabel(b.status_pembayaran)}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: 'aksi',
+      header: 'Aksi',
+      thClassName: 'w-44',
+      render: (b) =>
+        canCancelBooking(b) ? (
+          <div className="flex flex-wrap gap-1.5">
+            <button className="btn btn-secondary btn-sm" onClick={() => navigate(`/booking?edit=${b.id}`)}>Edit</button>
+            <button className="btn btn-danger btn-sm" onClick={() => setCancelModal(b)}>Batalkan</button>
+          </div>
+        ) : ['pending', 'dikonfirmasi'].includes(b.status) ? (
+          <span className="text-xs text-slate-400">Lewat batas batal</span>
+        ) : (
+          <span className="text-slate-300">&mdash;</span>
+        ),
+    },
+  ];
 
   return (
     <div className="animate-fade">
-      <div className="page-header">
-        <h1>Riwayat Booking</h1>
-        <p>Semua history pemesanan lapangan tenis Anda</p>
-      </div>
+      <PageHeader title="Riwayat Booking" subtitle="Semua history pemesanan lapangan tenis Anda" />
 
       {/* Filter tabs */}
-      <div className="tabs">
+      <div className="tabs mb-4">
         {STATUS_FILTERS.map((s) => (
           <button key={s} className={`tab-btn ${filter === s ? 'active' : ''}`} onClick={() => setFilter(s)}>
             {s === 'semua' ? 'Semua' : getStatusLabel(s)}
@@ -71,91 +134,18 @@ export default function RiwayatBooking() {
         ))}
       </div>
 
-      {loading ? (
-        <LoadingSpinner text="Memuat riwayat..." />
-      ) : bookings.length === 0 ? (
-        <div className="empty-state">
-          <h3>Tidak Ada Booking</h3>
-          <p>Belum ada booking dengan status ini</p>
-        </div>
-      ) : (
-        <>
-          {bookings.map((b) => (
-            <div key={b.id} className="booking-card animate-fade">
-              <div className="booking-card-header">
-                <div>
-                  <div className="booking-lapangan">{b.lapangan?.nama || '—'}</div>
-                  <div className="booking-id">ID #{b.id} • Dibuat {new Date(b.createdAt).toLocaleDateString('id-ID')}</div>
-                </div>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-                  <span className={`badge ${getStatusColor(b.status)}`}>{getStatusLabel(b.status)}</span>
-                  <span className={`badge ${b.status_pembayaran === 'sudah_bayar' ? 'badge-success' : 'badge-default'}`}>
-                    {getPembayaranLabel(b.status_pembayaran)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="booking-detail">
-                <div className="booking-detail-item">
-                  <span className="booking-detail-label">Tanggal</span>
-                  <span className="booking-detail-value">
-                    {new Date(b.tanggal).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
-                  </span>
-                </div>
-                <div className="booking-detail-item">
-                  <span className="booking-detail-label">Jam Bermain</span>
-                  <span className="booking-detail-value">{b.jam_mulai} – {b.jam_selesai} ({b.durasi} jam)</span>
-                </div>
-                <div className="booking-detail-item">
-                  <span className="booking-detail-label">Total Harga</span>
-                  <span className="booking-detail-value" style={{ color: 'var(--color-primary)', fontWeight: 700 }}>{formatRupiah(b.total_harga)}</span>
-                </div>
-              </div>
-
-              {b.catatan && (
-                <div style={{ background: 'var(--color-surface-2)', borderRadius: 'var(--radius-sm)', padding: '8px 12px', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>
-                  Catatan: {b.catatan}
-                </div>
-              )}
-
-              {b.alasan_batal && (
-                <div style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: 'var(--radius-sm)', padding: '8px 12px', fontSize: '0.85rem', color: '#f87171', marginBottom: '12px' }}>
-                  Alasan: {b.alasan_batal}
-                </div>
-              )}
-
-              <div className="booking-actions">
-                {canCancelBooking(b) && (
-                  <>
-                    <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/booking?edit=${b.id}`)}>
-                      Edit
-                    </button>
-                    <button className="btn btn-danger btn-sm" onClick={() => setCancelModal(b)}>
-                      Batalkan
-                    </button>
-                  </>
-                )}
-                {!canCancelBooking(b) && ['pending', 'dikonfirmasi'].includes(b.status) && (
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                    Sudah melewati batas pembatalan (12 jam)
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="pagination">
-              <button className="pagination-btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>‹</button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <button key={p} className={`pagination-btn ${p === page ? 'active' : ''}`} onClick={() => setPage(p)}>{p}</button>
-              ))}
-              <button className="pagination-btn" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>›</button>
-            </div>
-          )}
-        </>
-      )}
+      <DataTable
+        columns={columns}
+        data={bookings}
+        rowKey={(b) => b.id}
+        loading={loading}
+        emptyText="Belum ada booking dengan status ini."
+        page={page}
+        pageSize={limit}
+        total={total}
+        onPageChange={setPage}
+        onPageSizeChange={(n) => { setLimit(n); setPage(1); }}
+      />
 
       {/* Cancel confirm modal */}
       <Modal

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Route as RouteIcon, CalendarCheck, Hourglass, MessageCircle, Banknote } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import api from '../../api/axios';
 import { formatRupiah, getStatusLabel, getStatusColor, canCancelBooking } from '../../utils/helpers';
@@ -166,25 +167,42 @@ export default function UserDashboard() {
         )}
       </div>
 
-      {/* Info section */}
-      <div className="card" style={{ marginTop: '16px', background: 'linear-gradient(135deg, rgba(56,189,248,0.08), rgba(167,139,250,0.06))', borderColor: 'rgba(56,189,248,0.2)' }}>
-        <h3 style={{ marginBottom: '12px' }}>Alur Booking</h3>
-        <div className="timeline">
+      {/* Info section — Alur Booking */}
+      <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h3 className="flex items-center gap-2 text-base font-bold text-slate-900">
+          <RouteIcon size={18} className="text-primary-600" />
+          Alur Booking
+        </h3>
+        <ol
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5"
+          style={{ paddingTop: '32px' }}
+        >
           {[
-            { title: 'Pilih & Booking', desc: 'Pilih lapangan, tanggal, dan jam' },
-            { title: 'Tunggu Konfirmasi', desc: 'Admin akan verifikasi dalam waktu singkat' },
-            { title: 'Notifikasi WhatsApp', desc: 'Terima konfirmasi di WhatsApp Anda' },
-            { title: 'Bayar di Tempat', desc: 'Datang & bayar langsung ke petugas' },
-          ].map((step, i) => (
-            <div key={i} className="timeline-item">
-              <div className="timeline-dot active">{i + 1}</div>
-              <div className="timeline-content">
-                <div className="timeline-title">{step.title}</div>
-                <div className="timeline-desc">{step.desc}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+            { icon: CalendarCheck, title: 'Pilih & Booking', desc: 'Pilih lapangan, tanggal, dan jam' },
+            { icon: Hourglass, title: 'Tunggu Konfirmasi', desc: 'Admin akan verifikasi dalam waktu singkat' },
+            { icon: MessageCircle, title: 'Notifikasi WhatsApp', desc: 'Terima konfirmasi di WhatsApp Anda' },
+            { icon: Banknote, title: 'Bayar di Tempat', desc: 'Datang & bayar langsung ke petugas' },
+          ].map((step, i) => {
+            const Icon = step.icon;
+            return (
+              <li key={i} className="relative flex gap-3 rounded-xl border border-slate-100 bg-slate-50 p-5 transition hover:border-primary-200 hover:bg-primary-50/50">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-600 text-white shadow-sm">
+                  <Icon size={17} />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-[0.65rem] font-bold uppercase tracking-wider text-primary-600">Langkah {i + 1}</span>
+                  </div>
+                  <div className="text-sm font-semibold text-slate-800">{step.title}</div>
+                  <div className="mt-0.5 text-xs leading-relaxed text-slate-500">{step.desc}</div>
+                </div>
+                {i < 3 && (
+                  <span aria-hidden className="absolute -right-2.5 top-1/2 hidden h-px w-2.5 bg-slate-300 lg:block" />
+                )}
+              </li>
+            );
+          })}
+        </ol>
       </div>
 
       {/* Cancel Modal */}

@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import api from '../../api/axios';
-import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import PageHeader from '../../components/ui/PageHeader';
 import Modal from '../../components/ui/Modal';
+import DataTable from '../../components/ui/DataTable';
 import { formatDateInput } from '../../utils/helpers';
 
 export default function KelolaJadwal() {
@@ -66,47 +67,38 @@ export default function KelolaJadwal() {
 
   return (
     <div className="animate-fade">
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div>
-          <h1>Kelola Jadwal</h1>
-          <p>Blokir jadwal lapangan untuk maintenance atau turnamen</p>
-        </div>
-        <button className="btn btn-primary" onClick={() => setModalOpen(true)}>+ Blokir Jadwal</button>
-      </div>
+      <PageHeader
+        title="Kelola Jadwal"
+        subtitle="Blokir jadwal lapangan untuk maintenance atau turnamen"
+        actions={<button className="btn btn-primary" onClick={() => setModalOpen(true)}>+ Blokir Jadwal</button>}
+      />
 
-      {loading ? (
-        <LoadingSpinner text="Memuat jadwal..." />
-      ) : blokirs.length === 0 ? (
-        <div className="empty-state">
-          <h3>Tidak Ada Jadwal Terblokir</h3>
-          <p>Semua lapangan berjalan sesuai jam operasional</p>
-        </div>
-      ) : (
-        <div className="table-wrapper">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>Jam</th>
-                <th>Lapangan</th>
-                <th>Alasan</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {blokirs.map((b) => (
-                <tr key={b.id}>
-                  <td style={{ fontWeight: 600 }}>{new Date(b.tanggal).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                  <td style={{ color: 'var(--color-danger)' }}>{b.jam_mulai} – {b.jam_selesai}</td>
-                  <td>{b.lapangan?.nama}</td>
-                  <td style={{ color: 'var(--text-secondary)' }}>{b.alasan}</td>
-                  <td><button className="btn btn-secondary btn-sm" onClick={() => handleDelete(b.id)}>Buka Blokir</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <DataTable
+        columns={[
+          {
+            key: 'tanggal',
+            header: 'Tanggal',
+            render: (b) => (
+              <span className="font-semibold capitalize">
+                {new Date(b.tanggal).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
+            ),
+          },
+          { key: 'jam', header: 'Jam', render: (b) => <span className="font-medium text-red-500">{b.jam_mulai} – {b.jam_selesai}</span> },
+          { key: 'lapangan', header: 'Lapangan', render: (b) => b.lapangan?.nama },
+          { key: 'alasan', header: 'Alasan', render: (b) => <span className="text-slate-500">{b.alasan}</span> },
+          {
+            key: 'aksi',
+            header: 'Aksi',
+            thClassName: 'w-32',
+            render: (b) => <button className="btn btn-secondary btn-sm" onClick={() => handleDelete(b.id)}>Buka Blokir</button>,
+          },
+        ]}
+        data={blokirs}
+        rowKey={(b) => b.id}
+        loading={loading}
+        emptyText="Semua lapangan berjalan sesuai jam operasional."
+      />
 
       {/* Modal Add */}
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Blokir Jadwal"

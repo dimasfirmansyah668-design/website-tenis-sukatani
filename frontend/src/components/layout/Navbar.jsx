@@ -12,27 +12,21 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/');
 
   const userLinks = [
+    { to: '/', label: 'Beranda', exact: true },
     { to: '/dashboard', label: 'Dashboard' },
     { to: '/lapangan', label: 'Lapangan' },
     { to: '/booking', label: 'Booking' },
     { to: '/riwayat', label: 'Riwayat' },
-    { to: '/informasi', label: 'Info' },
   ];
 
-  const adminLinks = [
-    { to: '/admin', label: 'Dashboard', exact: true },
-    { to: '/admin/pemesanan', label: 'Pemesanan' },
-    { to: '/admin/lapangan', label: 'Lapangan' },
-  ];
-
-  const links = user?.role === 'admin' ? adminLinks : userLinks;
+  const links = userLinks;
 
   return (
     <nav className="navbar">
       <div className="navbar-inner">
         {/* Brand */}
         <Link
-          to={user?.role === 'admin' ? '/admin' : isAuthenticated ? '/dashboard' : '/'}
+          to={isAuthenticated ? '/dashboard' : '/'}
           className="navbar-brand"
         >
           <span className="gradient-text">Booking Tenis Sukatani</span>

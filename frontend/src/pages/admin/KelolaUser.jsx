@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import api from '../../api/axios';
-import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import PageHeader from '../../components/ui/PageHeader';
 import Modal from '../../components/ui/Modal';
+import DataTable from '../../components/ui/DataTable';
 
 export default function KelolaUser() {
   const [users, setUsers] = useState([]);
@@ -53,12 +54,9 @@ export default function KelolaUser() {
 
   return (
     <div className="animate-fade">
-      <div className="page-header">
-        <h1>Kelola User</h1>
-        <p>Lihat dan kelola semua member Booking Tenis Sukatani</p>
-      </div>
+      <PageHeader title="Kelola User" subtitle="Lihat dan kelola semua member Booking Tenis Sukatani" />
 
-      <div className="filters-bar">
+      <div className="filters-bar mb-4">
         <div className="search-input-wrapper">
           <input type="text" className="form-input search-input" placeholder="Cari nama, email, atau HP..." value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
@@ -70,68 +68,71 @@ export default function KelolaUser() {
         <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginLeft: 'auto' }}>{users.length} user</span>
       </div>
 
-      {loading ? (
-        <LoadingSpinner text="Memuat user..." />
-      ) : users.length === 0 ? (
-        <div className="empty-state">
-          <h3>Tidak Ada User</h3>
-          <p>Tidak ada user yang sesuai kriteria pencarian</p>
-        </div>
-      ) : (
-        <div className="table-wrapper">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Nama</th>
-                <th>Kontak</th>
-                <th>Role</th>
-                <th>Bergabung</th>
-                <th>Status</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => (
-                <tr key={u.id} style={{ opacity: u.is_active ? 1 : 0.6 }}>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div className="user-avatar">{u.nama.charAt(0).toUpperCase()}</div>
-                      <div style={{ fontWeight: 600 }}>{u.nama}</div>
-                    </div>
-                  </td>
-                  <td>
-                    <div style={{ fontSize: '0.875rem' }}>{u.email}</div>
-                    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{u.no_hp}</div>
-                  </td>
-                  <td>
-                    <span className={`badge ${u.role === 'admin' ? 'badge-purple' : 'badge-default'}`}>
-                      {u.role.toUpperCase()}
-                    </span>
-                  </td>
-                  <td style={{ fontSize: '0.875rem' }}>{new Date(u.createdAt).toLocaleDateString('id-ID')}</td>
-                  <td>
-                    <span className={`badge ${u.is_active ? 'badge-success' : 'badge-danger'}`}>
-                      {u.is_active ? 'Aktif' : 'Nonaktif'}
-                    </span>
-                  </td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      {u.role !== 'admin' && (
-                        <>
-                          <button className={`btn btn-sm ${u.is_active ? 'btn-warning' : 'btn-success'}`} onClick={() => toggleActive(u)}>
-                            {u.is_active ? 'Suspend' : 'Aktifkan'}
-                          </button>
-                          <button className="btn btn-danger btn-sm" onClick={() => setDeleteModal(u)}>Hapus</button>
-                        </>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <DataTable
+        columns={[
+          {
+            key: 'nama',
+            header: 'Nama',
+            render: (u) => (
+              <div className="flex items-center gap-3">
+                <div className="user-avatar">{u.nama.charAt(0).toUpperCase()}</div>
+                <span className={`font-semibold ${u.is_active ? '' : 'opacity-50'}`}>{u.nama}</span>
+              </div>
+            ),
+          },
+          {
+            key: 'kontak',
+            header: 'Kontak',
+            render: (u) => (
+              <div>
+                <div className="text-sm">{u.email}</div>
+                <div className="text-xs text-slate-500">{u.no_hp}</div>
+              </div>
+            ),
+          },
+          {
+            key: 'role',
+            header: 'Role',
+            render: (u) => (
+              <span className={`badge ${u.role === 'admin' ? 'badge-purple' : 'badge-default'} !text-[11px]`}>
+                {u.role.toUpperCase()}
+              </span>
+            ),
+          },
+          {
+            key: 'createdAt',
+            header: 'Bergabung',
+            render: (u) => new Date(u.createdAt).toLocaleDateString('id-ID'),
+          },
+          {
+            key: 'is_active',
+            header: 'Status',
+            render: (u) => (
+              <span className={`badge ${u.is_active ? 'badge-success' : 'badge-danger'} !text-[11px]`}>
+                {u.is_active ? 'Aktif' : 'Nonaktif'}
+              </span>
+            ),
+          },
+          {
+            key: 'aksi',
+            header: 'Aksi',
+            thClassName: 'w-44',
+            render: (u) =>
+              u.role !== 'admin' ? (
+                <div className="flex gap-1.5">
+                  <button className={`btn btn-sm ${u.is_active ? 'btn-warning' : 'btn-success'}`} onClick={() => toggleActive(u)}>
+                    {u.is_active ? 'Suspend' : 'Aktifkan'}
+                  </button>
+                  <button className="btn btn-danger btn-sm" onClick={() => setDeleteModal(u)}>Hapus</button>
+                </div>
+              ) : null,
+          },
+        ]}
+        data={users}
+        rowKey={(u) => u.id}
+        loading={loading}
+        emptyText="Tidak ada user yang sesuai kriteria pencarian."
+      />
 
       {/* Delete Modal */}
       <Modal isOpen={!!deleteModal} onClose={() => setDeleteModal(null)} title="Hapus User"

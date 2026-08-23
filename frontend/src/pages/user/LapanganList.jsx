@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { formatRupiah } from '../../utils/helpers';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import PageHeader from '../../components/ui/PageHeader';
 
 export default function LapanganList() {
   const [lapangan, setLapangan] = useState([]);
@@ -33,10 +34,7 @@ export default function LapanganList() {
 
   return (
     <div className="animate-fade">
-      <div className="page-header">
-        <h1>Lapangan Tenis</h1>
-        <p>Pilih lapangan yang ingin Anda booking</p>
-      </div>
+      <PageHeader title="Lapangan Tenis" subtitle="Pilih lapangan yang ingin Anda booking" />
 
       <div className="filters-bar">
         <div className="search-input-wrapper">

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import api from '../../api/axios';
 import { formatRupiah, getStatusColor, getStatusLabel } from '../../utils/helpers';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import PageHeader from '../../components/ui/PageHeader';
+import DataTable from '../../components/ui/DataTable';
 import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 export default function AdminDashboard() {
@@ -39,10 +41,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="animate-fade">
-      <div className="page-header">
-        <h1>Dashboard Admin</h1>
-        <p>Ringkasan aktivitas booking lapangan tenis</p>
-      </div>
+      <PageHeader title="Dashboard Admin" subtitle="Ringkasan aktivitas booking lapangan tenis" />
 
       {/* Stats Grid */}
       <div className="stats-grid">
@@ -66,8 +65,8 @@ export default function AdminDashboard() {
       </div>
 
       {/* Chart + Pending Actions */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
-        <div className="chart-card">
+      <div className="mb-5 grid gap-4 lg:grid-cols-2">
+        <div className="chart-card min-w-0">
           <h3 className="chart-title">Status Booking</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData} barSize={40}>
@@ -109,47 +108,33 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent bookings */}
-      <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">Booking Terbaru</h3>
-          <Link to="/admin/pemesanan" className="btn btn-ghost btn-sm">Lihat Semua →</Link>
-        </div>
-        {recentBookings.length === 0 ? (
-          <div className="empty-state"><h3>Belum Ada Booking</h3></div>
-        ) : (
-          <div className="table-wrapper">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>User</th>
-                  <th>Lapangan</th>
-                  <th>Tanggal</th>
-                  <th>Jam</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentBookings.map((b) => (
-                  <tr key={b.id}>
-                    <td style={{ color: 'var(--text-muted)' }}>#{b.id}</td>
-                    <td>
-                      <div style={{ fontWeight: 600 }}>{b.user?.nama}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{b.user?.no_hp}</div>
-                    </td>
-                    <td>{b.lapangan?.nama}</td>
-                    <td>{new Date(b.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                    <td>{b.jam_mulai}–{b.jam_selesai}</td>
-                    <td style={{ color: 'var(--color-primary)', fontWeight: 600 }}>{formatRupiah(b.total_harga)}</td>
-                    <td><span className={`badge ${getStatusColor(b.status)}`}>{getStatusLabel(b.status)}</span></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-base font-bold text-slate-800">Booking Terbaru</h3>
+        <Link to="/admin/pemesanan" className="btn btn-ghost btn-sm">Lihat Semua &rarr;</Link>
       </div>
+      <DataTable
+        columns={[
+          { key: 'id', header: 'ID', thClassName: 'w-16', render: (b) => <span className="text-xs text-slate-400">#{b.id}</span> },
+          {
+            key: 'user',
+            header: 'User',
+            render: (b) => (
+              <div>
+                <div className="text-sm font-semibold text-slate-700">{b.user?.nama}</div>
+                <div className="text-xs text-slate-400">{b.user?.no_hp}</div>
+              </div>
+            ),
+          },
+          { key: 'lapangan', header: 'Lapangan', render: (b) => b.lapangan?.nama },
+          { key: 'tanggal', header: 'Tanggal', render: (b) => new Date(b.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) },
+          { key: 'jam', header: 'Jam', render: (b) => `${b.jam_mulai}–${b.jam_selesai}` },
+          { key: 'total_harga', header: 'Total', render: (b) => <span className="font-semibold text-primary-600">{formatRupiah(b.total_harga)}</span> },
+          { key: 'status', header: 'Status', render: (b) => <span className={`badge ${getStatusColor(b.status)} !text-[11px]`}>{getStatusLabel(b.status)}</span> },
+        ]}
+        data={recentBookings}
+        rowKey={(b) => b.id}
+        emptyText="Belum ada booking."
+      />
     </div>
   );
 }

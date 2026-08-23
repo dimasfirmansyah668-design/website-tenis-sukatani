@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import api from '../../api/axios';
 import { formatRupiah } from '../../utils/helpers';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import PageHeader from '../../components/ui/PageHeader';
 import Modal from '../../components/ui/Modal';
 
 const defaultForm = { nama: '', harga_per_jam: '', deskripsi: '', fasilitas: '', jam_buka: '07:00', jam_tutup: '22:00', foto_url: '', status: 'aktif' };
@@ -87,13 +88,11 @@ export default function KelolaLapangan() {
 
   return (
     <div className="animate-fade">
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div>
-          <h1>Kelola Lapangan</h1>
-          <p>Tambah, edit, dan nonaktifkan lapangan tenis</p>
-        </div>
-        <button className="btn btn-primary" onClick={openAdd}>+ Tambah Lapangan</button>
-      </div>
+      <PageHeader
+        title="Kelola Lapangan"
+        subtitle="Tambah, edit, dan nonaktifkan lapangan tenis"
+        actions={<button className="btn btn-primary" onClick={openAdd}>+ Tambah Lapangan</button>}
+      />
 
       <div className="courts-grid">
         {lapangan.map((l) => {

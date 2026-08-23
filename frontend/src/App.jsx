@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuthStore } from './store/authStore';
@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
+import { Menu } from 'lucide-react';
 
 import InformasiPage from './pages/public/InformasiPage';
 import LoginPage from './pages/auth/LoginPage';
@@ -36,6 +37,13 @@ const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
     <div className="admin-shell">
+      <button
+        className="admin-menu-btn"
+        onClick={() => setSidebarOpen((o) => !o)}
+        aria-label="Buka menu admin"
+      >
+        <Menu size={20} />
+      </button>
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="admin-content">
         <Outlet />
@@ -51,16 +59,23 @@ const UserLayout = () => (
   </div>
 );
 
+/* Navbar tampil di mana pun KECUALI panel admin (admin pakai sidebar) */
+const AppNavbar = () => {
+  const { pathname } = useLocation();
+  return pathname.startsWith('/admin') ? null : <Navbar />;
+};
+
 export default function App() {
   return (
     <BrowserRouter>
       <div className="app-root">
-        <Navbar />
+        <AppNavbar />
 
         <Routes>
           {/* Public — no extra wrapper (InformasiPage handles its own padding) */}
           <Route path="/" element={<InformasiPage />} />
-          <Route path="/informasi" element={<InformasiPage />} />
+          <Route path="/beranda" element={<InformasiPage />} />
+          <Route path="/informasi" element={<Navigate to="/beranda" replace />} />
 
           {/* Auth pages — centered, no page-wrapper needed */}
           <Route path="/login" element={<LoginPage />} />

@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '../../api/axios';
 import { formatRupiah, formatDateInput } from '../../utils/helpers';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import PageHeader from '../../components/ui/PageHeader';
 import Modal from '../../components/ui/Modal';
 
 /* ─── Helpers ─── */
@@ -97,7 +98,7 @@ export default function BookingPage() {
   const [selectedLapangan, setSelectedLapangan] = useState(null); // full object
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [slots, setSlots] = useState([]);
-  const [selectedSlots, setSelectedSlots] = useState([]);
+  const [selectedHours, setSelectedHours] = useState([]); // array 'HH:00', sorted
   const [catatan, setCatatan] = useState('');
   const [loadingLapangan, setLoadingLapangan] = useState(true);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -127,18 +128,12 @@ export default function BookingPage() {
           setCatatan(b.catatan || '');
           setIsEditing(true);
 
-          // Populate selected slots
-          const slotsArr = [];
-          const start = parseInt(b.jam_mulai.split(':')[0]);
-          const end = parseInt(b.jam_selesai.split(':')[0]);
-          for(let i=start; i<end; i++) {
-             slotsArr.push({ 
-               jam_mulai: `${String(i).padStart(2,'0')}:00`, 
-               jam_selesai: `${String(i+1).padStart(2,'0')}:00`, 
-               status: 'tersedia' 
-             });
+          // Populate jam terpilih dari rentang booking (per jam)
+          const hrs = [];
+          for (let h = parseInt(b.jam_mulai.split(':')[0]); h < parseInt(b.jam_selesai.split(':')[0]); h++) {
+            hrs.push(`${String(h).padStart(2, '0')}:00`);
           }
-          setSelectedSlots(slotsArr);
+          setSelectedHours(hrs);
           setStep(2);
         } catch (err) {
           toast.error('Gagal memuat data edit booking. Mungkin sudah tidak bisa diedit.');
@@ -152,51 +147,71 @@ export default function BookingPage() {
     }).finally(() => setLoadingLapangan(false));
   }, [editId, location.state, navigate]);
 
-  // Load slots when court/date changes (only on step 2+)
+  // Load slots when court/date changes (only on step 2+).
+  // PENTING: range TIDAK boleh jadi dependency — kalau tidak, tiap setengah
+  // seleksi memicu refetch yang menghapus pilihan pertama user.
+  const slotsKeyRef = useRef(null);
   const fetchSlots = useCallback(async () => {
     if (!selectedLapangan) return;
     setLoadingSlots(true);
-    // Don't reset selectedSlots if we are in edit mode and just loaded
-    if (!isEditing || selectedSlots.length === 0) {
-      setSelectedSlots([]);
-    }
     try {
       const qs = editId ? `&exclude_booking_id=${editId}` : '';
       const { data } = await api.get(`/lapangan/${selectedLapangan.id}/slots?tanggal=${formatDateInput(selectedDate)}${qs}`);
       setSlots(data.slots || []);
     } catch { toast.error('Gagal memuat jadwal.'); }
     finally { setLoadingSlots(false); }
-  }, [selectedLapangan, selectedDate, editId, isEditing]);
+  }, [selectedLapangan, selectedDate, editId]);
 
-  useEffect(() => { if (step === 2) fetchSlots(); }, [fetchSlots, step]);
+  useEffect(() => {
+    if (step !== 2 || !selectedLapangan) return;
+    const key = `${selectedLapangan.id}|${formatDateInput(selectedDate)}|${editId || ''}`;
+    if (slotsKeyRef.current !== null && slotsKeyRef.current !== key) {
+      setSelectedHours([]);
+    }
+    slotsKeyRef.current = key;
+    fetchSlots();
+  }, [fetchSlots, step, selectedLapangan, selectedDate, editId]);
 
-  /* Slot selection — only contiguous */
-  const toggleSlot = (slot) => {
+  /* ── Seleksi sederhana: 1 kartu = 1 jam ── */
+  const hourIdx = (t) => parseInt(t.split(':')[0]);
+
+  const isContiguous = (arr) =>
+    arr.length <= 1 || arr.every((h, i) => i === 0 || hourIdx(h) - hourIdx(arr[i - 1]) === 1);
+
+  const toggleHour = (slot) => {
     if (slot.status !== 'tersedia') return;
-    const exists = selectedSlots.find(s => s.jam_mulai === slot.jam_mulai);
-    if (exists) {
-      setSelectedSlots(selectedSlots.filter(s => s.jam_mulai !== slot.jam_mulai));
+    const t = slot.jam_mulai;
+
+    // klik kartu yang sudah dipilih → toggle off
+    if (selectedHours.includes(t)) {
+      const next = selectedHours.filter((h) => h !== t);
+      if (!isContiguous(next)) {
+        toast.warning('Tidak bisa melepas jam tengah — rentang akan terpecah.');
+        return;
+      }
+      setSelectedHours(next);
       return;
     }
-    if (selectedSlots.length === 0) { setSelectedSlots([slot]); return; }
-    const sorted = [...selectedSlots, slot].sort((a, b) => a.jam_mulai.localeCompare(b.jam_mulai));
-    for (let i = 1; i < sorted.length; i++) {
-      if (sorted[i].jam_mulai !== sorted[i - 1].jam_selesai) {
-        toast.warning('Pilih jam yang berurutan dan berdekatan!'); return;
-      }
+
+    // tambah kartu: wajib menyambung dengan rentang aktif
+    if (selectedHours.length > 0 && !selectedHours.some((h) => Math.abs(hourIdx(h) - hourIdx(t)) === 1)) {
+      toast.warning('Pilih jam yang berurutan dengan pilihanmu.');
+      return;
     }
-    setSelectedSlots(sorted);
+    setSelectedHours([...selectedHours, t].sort());
   };
 
+  const clearSelection = () => setSelectedHours([]);
+
   const summary = (() => {
-    if (!selectedSlots.length || !selectedLapangan) return null;
-    const sorted = [...selectedSlots].sort((a, b) => a.jam_mulai.localeCompare(b.jam_mulai));
-    const durasi = sorted.length;
+    if (selectedHours.length === 0 || !selectedLapangan) return null;
+    const first = selectedHours[0];
+    const lastEnd = `${String(hourIdx(selectedHours[selectedHours.length - 1]) + 1).padStart(2, '0')}:00`;
     return {
-      jam_mulai: sorted[0].jam_mulai,
-      jam_selesai: sorted[sorted.length - 1].jam_selesai,
-      durasi,
-      total: durasi * selectedLapangan.harga_per_jam,
+      jam_mulai: first,
+      jam_selesai: lastEnd,
+      durasi: selectedHours.length,
+      total: selectedHours.length * selectedLapangan.harga_per_jam,
     };
   })();
 
@@ -261,10 +276,10 @@ export default function BookingPage() {
 
   return (
     <div className="animate-fade">
-      <div className="page-header">
-        <h1>{isEditing ? 'Edit Booking' : 'Booking Lapangan'}</h1>
-        <p>{isEditing ? 'Ubah jadwal atau lapangan pesanan Anda' : 'Pilih lapangan dan jadwal bermain Anda'}</p>
-      </div>
+      <PageHeader
+        title={isEditing ? 'Edit Booking' : 'Booking Lapangan'}
+        subtitle={isEditing ? 'Ubah jadwal atau lapangan pesanan Anda' : 'Pilih lapangan dan jadwal bermain Anda'}
+      />
 
       <StepBar step={step} />
 
@@ -346,24 +361,23 @@ export default function BookingPage() {
               ) : (
                 <div className="slot-picker-grid">
                   {slots.map((slot) => {
-                    const isSel = selectedSlots.some(s => s.jam_mulai === slot.jam_mulai);
+                    const picked = selectedHours.includes(slot.jam_mulai);
                     const label = {
-                      tersedia: isSel ? '✓ Dipilih' : 'Pilih',
+                      tersedia: picked ? 'Dipilih' : 'Tersedia',
                       terisi: 'Terisi',
-                      diblokir: 'Blokir',
+                      diblokir: 'Diblokir',
                       terlewat: 'Lewat',
                     }[slot.status];
                     return (
                       <button
                         key={slot.jam_mulai}
                         disabled={slot.status !== 'tersedia'}
-                        onClick={() => toggleSlot(slot)}
-                        className={['slot-btn', slot.status, isSel ? 'selected' : ''].join(' ')}
+                        onClick={() => toggleHour(slot)}
+                        className={['slot-btn', slot.status, picked ? 'selected' : ''].join(' ')}
                         title={slot.status === 'terlewat' ? 'Waktu sudah lewat' : slot.status === 'terisi' ? 'Sudah dipesan' : slot.status === 'diblokir' ? 'Maintenance' : ''}
                       >
-                        <span className="slot-btn-time">{slot.jam_mulai}</span>
-                        <span className="slot-btn-end">s/d {slot.jam_selesai}</span>
-                        <span className="slot-btn-label">{label}</span>
+                        <span className="slot-card-range">{slot.jam_mulai.replace(':', '.')} - {slot.jam_selesai.replace(':', '.')}</span>
+                        <span className="slot-card-status">{label}</span>
                       </button>
                     );
                   })}
@@ -375,8 +389,11 @@ export default function BookingPage() {
                 <div className="slot-summary-chip">
                   <span>{summary.jam_mulai} – {summary.jam_selesai} ({summary.durasi} jam)</span>
                   <strong>{formatRupiah(summary.total)}</strong>
-                  <button className="chip-clear" onClick={() => setSelectedSlots([])}>✕</button>
+                  <button className="chip-clear" onClick={clearSelection}>✕</button>
                 </div>
+              )}
+              {!summary && (
+                <p className="slot-hint">Klik kartu untuk memilih — 1 kartu = 1 jam bermain.</p>
               )}
                 {/* Controls */}
                 <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
@@ -384,7 +401,7 @@ export default function BookingPage() {
                   <button 
                     className="btn btn-primary" 
                     style={{ flex: 1 }} 
-                    disabled={selectedSlots.length === 0}
+                    disabled={!summary}
                     onClick={() => setStep(3)}
                   >
                     {isEditing ? 'Simpan Perubahan' : 'Lanjutkan Booking'} →
