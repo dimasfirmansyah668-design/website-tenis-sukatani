@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 /* Seluruh stylesheet legacy dibungkus @layer components agar KALAH dari
    utility Tailwind (@layer utilities) — sebelumnya reset universal di file ini
@@ -810,6 +810,144 @@ h1, h2, h3, h4, h5, h6 {
   .stats-grid { grid-template-columns: 1fr; }
   .slot-picker-grid { grid-template-columns: repeat(3, 1fr); }
   .auth-card { padding: 24px 18px; }
+}
+
+/* ───────────────────────── LANDING PAGE (/) ─────────────────────────
+   Satu container untuk SEMUA section (hero + main) — lebar konsisten,
+   margin auto. Header = acuan; semua di bawahnya mengikuti. */
+.landing-page { --max-width: 1200px; }
+.landing-container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+.landing-hero { position: relative; overflow: hidden; padding: 96px 0 72px; text-align: center; }
+.hero-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+.landing-hero h1 { font-size: clamp(2rem, 5vw, 3.25rem); margin-bottom: 16px; }
+.hero-sub { max-width: 640px; color: var(--text-secondary); font-size: 1.05rem; line-height: 1.65; margin-bottom: 28px; }
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.trust-row {
+  display: flex; gap: 8px 24px; justify-content: center; flex-wrap: wrap;
+  margin: 28px 0 0; padding: 0; list-style: none;
+  color: var(--text-muted); font-size: 0.85rem;
+}
+.trust-row li { display: inline-flex; align-items: center; gap: 6px; }
+
+.landing-section { margin-bottom: 88px; scroll-margin-top: 80px; }
+.section-head { text-align: center; margin-bottom: 36px; }
+.section-head h2 { font-size: 1.75rem; margin-bottom: 8px; }
+.section-head p { color: var(--text-secondary); }
+
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+.feature-card { text-align: left; }
+.feature-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content:center; margin-bottom: 14px;
+  background: rgba(5,150,105,.12); color: var(--color-primary);
+}
+.feature-icon-sm { width: 38px; height: 38px; margin-bottom: 10px; flex-shrink: 0; }
+.feature-card h3 { font-size: 1rem; margin-bottom: 6px; }
+.feature-card p { color: var(--text-secondary); font-size: 0.875rem; line-height: 1.55; }
+
+/* auto-fill (bukan auto-fit) — saat cuma 1 lapangan, kartu TIDAK
+   melebar memenuhi baris; lebar kolom tetap wajar ±350px */
+.court-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+.court-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.court-thumb {
+  aspect-ratio: 16 / 9;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,.75);
+  background: linear-gradient(135deg, #047857, #059669 60%, #10b981);
+}
+.court-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.court-body { padding: 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.court-body h3 { font-size: 1.05rem; }
+.court-desc { color: var(--text-secondary); font-size: 0.875rem; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font-size: 0.72rem; font-weight: 600; color: var(--color-primary);
+  background: rgba(5,150,105,.1); border-radius: 999px; padding: 4px 10px;
+}
+.court-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: auto; padding-top: 14px; border-top: 1px dashed var(--color-border);
+}
+.court-price { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.3rem; color: var(--color-primary); }
+.court-price span { font-size: 0.78rem; font-weight: 500; color: var(--text-muted); }
+.court-skeleton {
+  height: 300px; border-radius: 16px;
+  background: linear-gradient(100deg, var(--color-surface-2) 40%, var(--color-surface-3) 50%, var(--color-surface-2) 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite linear;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+.price-card { max-width: 720px; margin-inline: auto; }
+.price-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: 16px 4px; border-bottom: 1px dashed var(--color-border);
+}
+.price-row:last-child { border-bottom: none; }
+.price-row strong { display: block; }
+.price-row small { color: var(--text-muted); font-size: 0.82rem; }
+.price-val { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--color-primary); white-space: nowrap; }
+.price-val span { color: var(--text-muted); font-weight: 500; font-size: 0.8rem; }
+
+.hours-list { max-width: 480px; margin-inline: auto; }
+.hours-row {
+  display: flex; justify-content: space-between; gap: 16px;
+  padding: 14px 4px; border-bottom: 1px dashed var(--color-border);
+}
+.hours-row:last-child { border-bottom: none; }
+
+.contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.contact-card { display: flex; gap: 14px; align-items: center; }
+.contact-title { font-weight: 600; margin-bottom: 4px; }
+.contact-info { color: var(--text-secondary); font-size: 0.875rem; line-height: 1.55; }
+
+.cta-panel {
+  text-align: center; padding: 56px 24px; border-radius: 20px;
+  background: linear-gradient(135deg, rgba(5,150,105,.16), rgba(16,185,129,.05));
+  border: 1px solid rgba(5,150,105,.3);
+}
+/* Jarak CTA penutup → footer */
+.landing-section-final { margin-bottom: 96px; }
+.cta-panel h2 { margin-bottom: 8px; }
+.cta-panel p { color: var(--text-secondary); margin-bottom: 24px; }
+.cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+@media (max-width: 768px) {
+  .landing-hero { padding: 64px 0 48px; }
+  .landing-section { margin-bottom: 64px; }
+  .court-foot { flex-direction: column; align-items: stretch; }
+  .court-foot .btn { justify-content: center; }
+}
+
+/* ── Footer landing ── */
+.landing-footer { border-top: 1px solid var(--color-border); background: var(--color-surface-2); padding: 48px 0 0; }
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr;
+  gap: 32px; align-items: start; padding-bottom: 36px;
+}
+.footer-brand h3 { font-size: 1.1rem; margin-bottom: 8px; }
+.footer-brand p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; max-width: 300px; }
+.footer-col h4 {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;
+}
+.footer-col a, .footer-col span {
+  display: block; color: var(--text-secondary);
+  font-size: 0.875rem; padding: 4px 0; text-decoration: none;
+}
+.footer-col a:hover { color: var(--color-primary); }
+.footer-bottom {
+  border-top: 1px solid var(--color-border);
+  padding: 16px 24px; text-align: center;
+  color: var(--text-muted); font-size: 0.8rem;
+}
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 24px; }
 }
 
 } /* ── tutup @layer components ── */

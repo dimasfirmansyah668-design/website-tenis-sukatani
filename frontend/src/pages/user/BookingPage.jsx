@@ -139,13 +139,17 @@ export default function BookingPage() {
           toast.error('Gagal memuat data edit booking. Mungkin sudah tidak bisa diedit.');
           navigate('/riwayat');
         }
-      } else if (location.state?.lapangan_id) {
-        // Auto-select if passed via state
-        const found = data.find(l => String(l.id) === String(location.state.lapangan_id));
-        if (found) { setSelectedLapangan(found); setStep(2); }
+      } else {
+        // Auto-select dari state navigasi (CTA kartu lapangan landing page)
+        // atau dari query ?lapangan=ID
+        const wanted = location.state?.lapangan_id ?? new URLSearchParams(location.search).get('lapangan');
+        if (wanted) {
+          const found = data.find((l) => String(l.id) === String(wanted));
+          if (found) { setSelectedLapangan(found); setStep(2); }
+        }
       }
     }).finally(() => setLoadingLapangan(false));
-  }, [editId, location.state, navigate]);
+  }, [editId, location.state, location.search, navigate]);
 
   // Load slots when court/date changes (only on step 2+).
   // PENTING: range TIDAK boleh jadi dependency — kalau tidak, tiap setengah

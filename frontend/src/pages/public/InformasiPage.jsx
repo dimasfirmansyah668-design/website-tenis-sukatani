@@ -1,124 +1,305 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { CalendarCheck, Clock, History, MessageCircle, Trophy, MapPin, Phone, Mail } from 'lucide-react';
+import api from '../../api/axios';
+import { formatRupiah } from '../../utils/helpers';
+
+const FALLBACK_COURTS = [
+  {
+    id: null,
+    nama: 'Lapangan Utama (Outdoor)',
+    deskripsi: 'Clay court, suasana outdoor segar',
+    harga_per_jam: 50000,
+    fasilitas: ['Clay court', 'Outdoor', 'Sewa raket'],
+  },
+];
+
+const FITUR = [
+  {
+    icon: CalendarCheck,
+    title: 'Booking Online Real-time',
+    desc: 'Lihat ketersediaan slot langsung dari sistem dan amankan jadwal tanpa perlu telepon-telepon.',
+  },
+  {
+    icon: Clock,
+    title: 'Durasi Fleksibel Per Jam',
+    desc: 'Mulai dari jam 06:00 pagi — pilih sendiri jam mulai dan berapa jam ingin bermain.',
+  },
+  {
+    icon: History,
+    title: 'Riwayat & Status Jelas',
+    desc: 'Pantau status setiap booking (menunggu, dikonfirmasi, selesai) kapan saja dari dashboard.',
+  },
+  {
+    icon: MessageCircle,
+    title: 'Konfirmasi via WhatsApp',
+    desc: 'Admin memverifikasi pesanan dengan cepat dan siap membantu lewat WhatsApp.',
+  },
+];
+
+const JAM_OPERASIONAL = [
+  { hari: 'Senin – Jumat', jam: '06:00 – 18:00' },
+  { hari: 'Sabtu', jam: '06:00 – 18:00' },
+  { hari: 'Minggu & Libur', jam: '06:00 – 17:00' },
+];
+
+const KONTAK = [
+  { icon: MapPin, title: 'Alamat', info: 'Jl. Sawo Raya No.14, Sukatani, Kec. Tapos, Kota Depok, Jawa Barat 16454' },
+  { icon: Phone, title: 'Telepon', info: '082129438009' },
+  { icon: MessageCircle, title: 'WhatsApp', info: '082129438009', wa: true },
+  { icon: Mail, title: 'Email', info: 'dimfirmansyah334@info.com' },
+];
+
 export default function InformasiPage() {
-  const fasilitas = [
-    { title: '1 Lapangan Tenis', desc: 'Outdoor clay court berkualitas tinggi' },
-    { title: 'Parkir Luas', desc: 'Area parkir luas untuk kendaraan roda 2 dan 4' },
-    { title: 'Toilet', desc: 'Fasilitas toilet bersih untuk pemain' },
-    { title: 'Penyewaan Raket', desc: 'Sewa raket tenis berkualitas dengan harga terjangkau' },
-  ];
+  const [courts, setCourts] = useState(null);
+  const [loadingCourts, setLoadingCourts] = useState(true);
 
-  const pricing = [
-    { name: 'Lapangan Utama (Outdoor)', harga: 'Rp 50.000 / jam', desc: 'Clay court, suasana outdoor segar' },
-  ];
+  /* GET /lapangan bersifat publik — pengunjung belum login pun bisa melihat */
+  useEffect(() => {
+    let alive = true;
+    api
+      .get('/lapangan?status=aktif')
+      .then(({ data }) => {
+        if (alive) setCourts(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (alive) setLoadingCourts(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
-  const jam = [
-    { hari: 'Senin – Jumat', jam: '06:00 – 18:00' },
-    { hari: 'Sabtu', jam: '06:00 – 18:00' },
-    { hari: 'Minggu & Libur', jam: '06:00 – 17:00' },
-  ];
+  /* Data live bila tersedia; kalau API gagal, tampilkan data statis agar halaman tidak kosong */
+  const list = courts && courts.length > 0 ? courts : FALLBACK_COURTS;
 
   return (
-    <div style={{ minHeight: '100vh' }}>
-      {/* Hero */}
-      <div className="hero-section" style={{ padding: '80px 24px 60px', textAlign: 'center', position: 'relative' }}>
+    <div className="landing-page">
+      {/* ══ HERO ══ */}
+      <header className="landing-hero">
         <div className="hero-glow" />
-        <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', marginBottom: '16px' }}>
-          <span className="gradient-text">Booking Tenis Sukatani</span>
-        </h1>
-        <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto 32px' }}>
-          Pusat Tenis Premium di Kota Anda. Fasilitas modern, lapangan berkualitas, dan booking mudah dari genggaman tangan Anda.
-        </p>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <a href="/register" className="btn btn-primary btn-lg">Daftar Gratis</a>
-          <a href="/booking" className="btn btn-secondary btn-lg">Booking Sekarang</a>
+        <div className="landing-container hero-inner">
+          <h1>
+            <span className="gradient-text">Booking Tenis Sukatani</span>
+          </h1>
+          <p className="hero-sub">
+            Website resmi pemesanan lapangan tenis di Sukatani, Depok. Pilih lapangan, tentukan jam
+            mulai dan durasi bermain, lalu dapatkan konfirmasi dari admin — semuanya online dalam
+            beberapa klik.
+          </p>
+          <div className="hero-actions">
+            <Link to="/booking" className="btn btn-primary btn-lg">
+              Booking Sekarang
+            </Link>
+            <a href="#lapangan" className="btn btn-secondary btn-lg">
+              Lihat Lapangan ↓
+            </a>
+          </div>
+          <ul className="trust-row">
+            <li>
+              <Clock size={14} /> Pilih jam per jam
+            </li>
+            <li>
+              <MessageCircle size={14} /> Konfirmasi admin cepat
+            </li>
+            <li>
+              <CalendarCheck size={14} /> Tanpa aplikasi tambahan
+            </li>
+          </ul>
         </div>
-      </div>
+      </header>
 
-      <div className="container" style={{ paddingBottom: '60px' }}>
-        {/* Fasilitas */}
-        <section style={{ marginBottom: '60px' }}>
-          <h2 style={{ textAlign: 'center', fontSize: '1.75rem', marginBottom: '8px' }}>Fasilitas Kami</h2>
-          <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '32px' }}>Lengkap untuk kenyamanan bermain Anda</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
-            {fasilitas.map((f, i) => (
-              <div key={i} className="card" style={{ textAlign: 'center' }}>
-                <h3 style={{ fontSize: '1rem', marginBottom: '8px' }}>{f.title}</h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>{f.desc}</p>
+      <main className="landing-container">
+        {/* ══ FITUR / BISA APA AJA ══ */}
+        <section id="fitur" className="landing-section">
+          <div className="section-head">
+            <h2>Bisa Apa Aja di Sini?</h2>
+            <p>Semua yang kamu butuhkan untuk bermain tenis, dalam satu website</p>
+          </div>
+          <div className="feature-grid">
+            {FITUR.map((f) => (
+              <div key={f.title} className="card feature-card">
+                <div className="feature-icon">
+                  <f.icon size={20} />
+                </div>
+                <h3>{f.title}</h3>
+                <p>{f.desc}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Harga */}
-        <section style={{ marginBottom: '60px' }}>
-          <h2 style={{ textAlign: 'center', fontSize: '1.75rem', marginBottom: '8px' }}>Harga Sewa</h2>
-          <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '32px' }}>Harga terjangkau, kualitas premium</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', maxWidth: '700px', margin: '0 auto' }}>
-            {pricing.map((p, i) => (
-              <div key={i} className="card" style={{ textAlign: 'center', background: i === 0 ? 'linear-gradient(135deg, rgba(56,189,248,0.1), transparent)' : undefined, borderColor: i === 0 ? 'rgba(56,189,248,0.3)' : undefined }}>
-                {i === 0 && <div className="badge badge-info" style={{ marginBottom: '12px' }}>Populer</div>}
-                <h3 style={{ marginBottom: '8px' }}>{p.name}</h3>
-                <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-primary)', marginBottom: '8px', fontFamily: 'Space Grotesk' }}>{p.harga}</div>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>{p.desc}</p>
-              </div>
-            ))}
+        {/* ══ PREVIEW LAPANGAN (LIVE) ══ */}
+        <section id="lapangan" className="landing-section">
+          <div className="section-head">
+            <h2>Lapangan Tersedia</h2>
+            <p>Data langsung dari sistem — klik booking untuk mengamankan slot</p>
           </div>
-        </section>
-
-        {/* Jam Operasional */}
-        <section style={{ marginBottom: '60px' }}>
-          <h2 style={{ textAlign: 'center', fontSize: '1.75rem', marginBottom: '32px' }}>Jam Operasional</h2>
-          <div className="card" style={{ maxWidth: '600px', margin: '0 auto' }}>
-            <div className="table-wrapper">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Hari</th>
-                    <th>Jam Operasional</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {jam.map((j, i) => (
-                    <tr key={i}>
-                      <td style={{ fontWeight: 500 }}>{j.hari}</td>
-                      <td>{j.jam}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {loadingCourts ? (
+            <div className="court-grid">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="court-skeleton" />
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="court-grid">
+              {list.map((c) => (
+                <article key={c.id ?? c.nama} className="card court-card">
+                  <div className="court-thumb">
+                    {c.foto_url ? <img src={c.foto_url} alt={c.nama} /> : <Trophy size={40} />}
+                  </div>
+                  <div className="court-body">
+                    <h3>{c.nama}</h3>
+                    {c.deskripsi && <p className="court-desc">{c.deskripsi}</p>}
+                    {Array.isArray(c.fasilitas) && c.fasilitas.length > 0 && (
+                      <div className="chip-row">
+                        {c.fasilitas.slice(0, 4).map((f) => (
+                          <span key={f} className="chip">
+                            {f}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="court-foot">
+                      <div className="court-price">
+                        {formatRupiah(c.harga_per_jam)}
+                        <span> / jam</span>
+                      </div>
+                      <Link
+                        to="/booking"
+                        state={c.id ? { lapangan_id: c.id } : undefined}
+                        className="btn btn-primary btn-sm"
+                      >
+                        Booking Lapangan Ini
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </section>
 
-        {/* Lokasi & Kontak */}
-        <section style={{ marginBottom: '60px' }}>
-          <h2 style={{ textAlign: 'center', fontSize: '1.75rem', marginBottom: '32px' }}>Lokasi & Kontak</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', maxWidth: '800px', margin: '0 auto' }}>
-            {[
-              { title: 'Alamat', info: 'Jl. Sawo Raya No.14, Sukatani, Kec. Tapos, Kota Depok, Jawa Barat 16454' },
-              { title: 'Telepon', info: '082129438009' },
-              { title: 'WhatsApp', info: '082129438009' },
-              { title: 'Email', info: 'dimfirmansyah334@info.com' },
-            ].map((item, i) => (
-              <div key={i} className="card" style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+        {/* ══ HARGA ══ */}
+        <section id="harga" className="landing-section">
+          <div className="section-head">
+            <h2>Harga Sewa</h2>
+            <p>Harga terjangkau, kualitas premium</p>
+          </div>
+          <div className="card price-card">
+            {list.map((c) => (
+              <div key={`harga-${c.id ?? c.nama}`} className="price-row">
                 <div>
-                  <div style={{ fontWeight: 600, marginBottom: '4px' }}>{item.title}</div>
-                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>{item.info}</div>
+                  <strong>{c.nama}</strong>
+                  {c.deskripsi && <small>{c.deskripsi}</small>}
+                </div>
+                <div className="price-val">
+                  {formatRupiah(c.harga_per_jam)}
+                  <span> /jam</span>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* CTA */}
-        <div className="card" style={{ textAlign: 'center', background: 'linear-gradient(135deg, rgba(56,189,248,0.1), rgba(167,139,250,0.08))', borderColor: 'rgba(56,189,248,0.2)' }}>
-          <h2 style={{ marginBottom: '8px' }}>Siap Bermain?</h2>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>Booking lapangan tenis sekarang dan rasakan pengalaman bermain yang menyenangkan!</p>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-            <a href="/register" className="btn btn-primary">Daftar Gratis</a>
-            <a href="/login" className="btn btn-secondary">Sudah Punya Akun</a>
+        {/* ══ JAM OPERASIONAL ══ */}
+        <section id="jadwal" className="landing-section">
+          <div className="section-head">
+            <h2>Jam Operasional</h2>
+            <p>Buka setiap hari — datang pagi atau sore, lapangan siap</p>
+          </div>
+          <div className="card">
+            <div className="hours-list">
+              {JAM_OPERASIONAL.map((j) => (
+                <div key={j.hari} className="hours-row">
+                  <span>{j.hari}</span>
+                  <strong>{j.jam}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ══ LOKASI & KONTAK ══ */}
+        <section id="kontak" className="landing-section">
+          <div className="section-head">
+            <h2>Lokasi & Kontak</h2>
+            <p>Mampir langsung atau hubungi kami terlebih dahulu</p>
+          </div>
+          <div className="contact-grid">
+            {KONTAK.map((item) => (
+              <div key={item.title} className="card contact-card">
+                <div className="feature-icon feature-icon-sm">
+                  <item.icon size={17} />
+                </div>
+                <div>
+                  <div className="contact-title">{item.title}</div>
+                  <div className="contact-info">{item.info}</div>
+                  {item.wa && (
+                    <a
+                      href="https://wa.me/628129438009"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn btn-primary btn-sm"
+                      style={{ marginTop: '10px' }}
+                    >
+                      Chat WhatsApp
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ══ CTA PENUTUP ══ */}
+        <section className="landing-section-final">
+          <div className="cta-panel">
+            <h2>Siap Bermain?</h2>
+            <p>Booking lapangan sekarang — pilih jamnya, main, dan rasakan bedanya.</p>
+            <div className="cta-actions">
+              <Link to="/register" className="btn btn-primary btn-lg">
+                Daftar Gratis
+              </Link>
+              <Link to="/login" className="btn btn-secondary btn-lg">
+                Sudah Punya Akun
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* ══ FOOTER ══ */}
+      <footer className="landing-footer">
+        <div className="landing-container footer-grid">
+          <div className="footer-brand">
+            <h3>Booking Tenis Sukatani</h3>
+            <p>
+              Sistem pemesanan lapangan tenis online di Sukatani, Depok. Pilih jam,
+              booking dalam beberapa klik, dan main.
+            </p>
+          </div>
+          <div className="footer-col">
+            <h4>Navigasi</h4>
+            <a href="#fitur">Fitur</a>
+            <a href="#lapangan">Lapangan</a>
+            <a href="#harga">Harga</a>
+            <a href="#jadwal">Jam Operasional</a>
+          </div>
+          <div className="footer-col">
+            <h4>Kontak</h4>
+            <span>Jl. Sawo Raya No.14, Sukatani, Depok</span>
+            <a href="https://wa.me/628129438009" target="_blank" rel="noreferrer">
+              WhatsApp: 082129438009
+            </a>
+            <Link to="/login">Masuk / Daftar</Link>
           </div>
         </div>
-      </div>
+        <div className="footer-bottom">
+          © {new Date().getFullYear()} Booking Tenis Sukatani. Semua hak dilindungi.
+        </div>
+      </footer>
     </div>
   );
 }
