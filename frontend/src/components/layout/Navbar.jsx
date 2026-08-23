@@ -32,21 +32,20 @@ export default function Navbar() {
           <span className="gradient-text">Booking Tenis Sukatani</span>
         </Link>
 
-        {/* Nav links */}
-        {isAuthenticated && (
-          <div className={`navbar-nav ${mobileOpen ? 'mobile-open' : ''}`}>
-            {links.map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                className={`nav-link ${l.exact ? location.pathname === l.to ? 'active' : '' : isActive(l.to) ? 'active' : ''}`}
-                onClick={() => setMobileOpen(false)}
-              >
-                {l.label}
-              </Link>
-            ))}
-          </div>
-        )}
+        {/* Nav links — tampil untuk semua (guest pun bisa melihat tujuan;
+            rute terlindungi otomatis dialihkan ke login oleh ProtectedRoute) */}
+        <div className={`navbar-nav ${mobileOpen ? 'mobile-open' : ''}`}>
+          {links.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className={`nav-link ${l.exact ? location.pathname === l.to ? 'active' : '' : isActive(l.to) ? 'active' : ''}`}
+              onClick={() => setMobileOpen(false)}
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
 
         {/* Right side */}
         <div className="navbar-user">
@@ -70,11 +69,9 @@ export default function Navbar() {
         </div>
 
         {/* Hamburger */}
-        {isAuthenticated && (
-          <button className="hamburger" onClick={() => setMobileOpen(!mobileOpen)}>
-            {mobileOpen ? '✕' : '☰'}
-          </button>
-        )}
+        <button className="hamburger" onClick={() => setMobileOpen(!mobileOpen)}>
+          {mobileOpen ? '✕' : '☰'}
+        </button>
       </div>
     </nav>
   );

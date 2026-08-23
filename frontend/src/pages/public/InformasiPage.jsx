@@ -282,10 +282,16 @@ export default function InformasiPage() {
           </div>
           <div className="footer-col">
             <h4>Navigasi</h4>
-            <a href="#fitur">Fitur</a>
-            <a href="#lapangan">Lapangan</a>
-            <a href="#harga">Harga</a>
-            <a href="#jadwal">Jam Operasional</a>
+            <Link to="/">Beranda</Link>
+            <Link to="/lapangan">Lapangan</Link>
+            <Link to="/booking">Booking</Link>
+            <Link to="/riwayat">Riwayat</Link>
+            <Link to="/dashboard">Dashboard</Link>
+          </div>
+          <div className="footer-col">
+            <h4>Akun</h4>
+            <Link to="/login">Masuk</Link>
+            <Link to="/register">Daftar</Link>
           </div>
           <div className="footer-col">
             <h4>Kontak</h4>
@@ -293,7 +299,6 @@ export default function InformasiPage() {
             <a href="https://wa.me/628129438009" target="_blank" rel="noreferrer">
               WhatsApp: 082129438009
             </a>
-            <Link to="/login">Masuk / Daftar</Link>
           </div>
         </div>
         <div className="footer-bottom">
