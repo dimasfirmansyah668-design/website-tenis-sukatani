@@ -147,25 +147,26 @@ export default function DataTable({
             </select>
           </label>
 
-          {totalPages > 1 && (
-            <nav className="flex items-center gap-1" aria-label="Pagination">
-              <PageBtn disabled={page <= 1} onClick={() => goToPage(page - 1)} label="Sebelumnya">
-                <ChevronLeft size={15} />
-              </PageBtn>
-              {getPageItems().map((item, i) =>
-                item === '…' ? (
-                  <span key={`e${i}`} className="px-1.5 text-xs text-slate-400">&hellip;</span>
-                ) : (
-                  <PageBtn key={item} active={item === page} onClick={() => goToPage(item)}>
-                    {item}
-                  </PageBtn>
-                )
-              )}
-              <PageBtn disabled={page >= totalPages} onClick={() => goToPage(page + 1)} label="Berikutnya">
-                <ChevronRight size={15} />
-              </PageBtn>
-            </nav>
-          )}
+          {/* Pagination SELALU ditampilkan — saat cuma satu halaman / di
+              ujung rentang, tombol prev/next otomatis disabled (redup +
+              cursor-not-allowed), bukan dihilangkan dari layar. */}
+          <nav className="flex items-center gap-1" aria-label="Pagination">
+            <PageBtn disabled={page <= 1} onClick={() => goToPage(page - 1)} label="Sebelumnya">
+              <ChevronLeft size={15} />
+            </PageBtn>
+            {getPageItems().map((item, i) =>
+              item === '…' ? (
+                <span key={`e${i}`} className="px-1.5 text-xs text-slate-400">&hellip;</span>
+              ) : (
+                <PageBtn key={item} active={item === page} onClick={() => goToPage(item)}>
+                  {item}
+                </PageBtn>
+              )
+            )}
+            <PageBtn disabled={page >= totalPages} onClick={() => goToPage(page + 1)} label="Berikutnya">
+              <ChevronRight size={15} />
+            </PageBtn>
+          </nav>
         </div>
       </div>
     </div>

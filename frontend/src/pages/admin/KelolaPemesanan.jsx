@@ -184,14 +184,16 @@ export default function KelolaPemesanan() {
         <div className="search-input-wrapper">
           <input type="text" className="form-input search-input" placeholder="Cari nama / email user..." value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
-        <select className="form-select filter-select" value={filter} onChange={(e) => setFilter(e.target.value)}>
-          {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s === 'semua' ? 'Semua Status' : getStatusLabel(s)}</option>)}
-        </select>
-        <select className="form-select filter-select" value={lapanganFilter} onChange={(e) => setLapanganFilter(e.target.value)}>
-          <option value="">Semua Lapangan</option>
-          {lapangans.map((l) => <option key={l.id} value={l.id}>{l.nama}</option>)}
-        </select>
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginLeft: 'auto' }}>{total} booking</span>
+        <div className="filters-group">
+          <select className="form-select filter-select" value={filter} onChange={(e) => setFilter(e.target.value)}>
+            {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s === 'semua' ? 'Semua Status' : getStatusLabel(s)}</option>)}
+          </select>
+          <select className="form-select filter-select" value={lapanganFilter} onChange={(e) => setLapanganFilter(e.target.value)}>
+            <option value="">Semua Lapangan</option>
+            {lapangans.map((l) => <option key={l.id} value={l.id}>{l.nama}</option>)}
+          </select>
+          <span className="filters-count">{total} booking</span>
+        </div>
       </div>
 
       <DataTable

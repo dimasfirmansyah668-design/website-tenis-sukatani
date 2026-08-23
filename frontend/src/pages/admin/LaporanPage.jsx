@@ -35,12 +35,12 @@ export default function LaporanPage() {
         subtitle="Rekapitulasi booking dan pendapatan per bulan"
         actions={
           <>
-            <select className="form-select" value={bulan} onChange={(e) => setBulan(e.target.value)} style={{ width: '140px' }}>
+            <select className="form-select w-35" value={bulan} onChange={(e) => setBulan(e.target.value)}>
               {['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'].map((m, i) => (
                 <option key={i} value={String(i + 1).padStart(2, '0')}>{m}</option>
               ))}
             </select>
-            <select className="form-select" value={tahun} onChange={(e) => setTahun(e.target.value)} style={{ width: '100px' }}>
+            <select className="form-select w-25" value={tahun} onChange={(e) => setTahun(e.target.value)}>
               {[2023, 2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
             </select>
           </>

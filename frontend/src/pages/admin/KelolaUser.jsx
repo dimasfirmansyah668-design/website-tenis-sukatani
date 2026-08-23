@@ -60,12 +60,14 @@ export default function KelolaUser() {
         <div className="search-input-wrapper">
           <input type="text" className="form-input search-input" placeholder="Cari nama, email, atau HP..." value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
-        <select className="form-select filter-select" value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
-          <option value="semua">Semua Role</option>
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginLeft: 'auto' }}>{users.length} user</span>
+        <div className="filters-group">
+          <select className="form-select filter-select" value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
+            <option value="semua">Semua Role</option>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+          <span className="filters-count">{users.length} user</span>
+        </div>
       </div>
 
       <DataTable
